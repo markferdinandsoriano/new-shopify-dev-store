@@ -1,3 +1,11 @@
+{% liquid
+  assign parent_links = linklists['main-menu'].links
+
+  for parent_link in linklists['main-menu'].links
+    assign child_links = parent_link.links
+  endfor
+%}
+
 <div class="w-full h-auto">
   <navigation-large-screen class="hidden show-large-screen">
     <div class="flex flex-row items-center fixed top-2 left-2 w-[124px]">
@@ -191,16 +199,6 @@
   "class": "navigation-menu-section",
   "enabled_on": {
     "groups": ["header"]
-  },
-  "presets": [
-    {
-      "name": "navigation-menu-presets",
-      "blocks": [
-        {
-          "type": "navigation"
-        }
-      ]
-    }
-  ]
+  }
 }
 {% endschema %}
