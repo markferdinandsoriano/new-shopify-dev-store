@@ -2,12 +2,12 @@
   assign parent_links = linklists['main-menu'].links
 %}
 
-{% capture special_custom_categories %}
+{% capture parent_menu_custom_categories %}
 {% for block in section.blocks %}
   {% case block.type %}
     {% when 'heading' %}
-      <hr>
       {% if block.settings.menu_level == 'parent-menu' %}
+        <hr>
         <ul class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full">
           <span class="p-[8px] h-[44px]">
             <h1
@@ -17,8 +17,18 @@
             </h1>
           </span>
         </ul>
-        {% elsif block.settings.menu_level == 'child-menu' %}
-        <ul class="cursor-pointer text-xl text-center flex flex-col py-2 px-6 gap-y-2 w-full">
+      {% endif %}
+  {% endcase %}
+{% endfor %}
+{% endcapture %}
+
+{% capture child_menu_custom_categories %}
+{% for block in section.blocks %}
+  {% case block.type %}
+    {% when 'heading' %}
+      {% if block.settings.menu_level == 'child-menu' %}
+        <hr>
+        <ul class="cursor-pointer text-xl text-center flex flex-col gap-y-2 w-full">
           <span class="p-[8px] h-[44px] pointer-events-none">
             <h1
               class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
@@ -43,7 +53,17 @@
             </button>
           {% endfor %}
         </ul>
-        {% elsif block.settings.menu_level == 'grand-child-menu' %}
+      {% endif %}
+  {% endcase %}
+{% endfor %}
+{% endcapture %}
+
+{% capture grand_child_menu_custom_categories %}
+{% for block in section.blocks %}
+  {% case block.type %}
+    {% when 'heading' %}
+      {% if block.settings.menu_level == 'grand-child-menu' %}
+        <hr>
         <ul class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full">
           <span class="p-[8px] h-[44px] pointer-events-none">
             <h1
@@ -109,10 +129,10 @@
             </button>
           {% endfor %}
         </ul>
-        {{ special_custom_categories }}
+        {{ parent_menu_custom_categories }}
       </div>
-      <div class="link-container col-span-3 bg-white hidden overflow-y-auto" child-link-container>
-        <ul class="cursor-pointer text-xl text-center flex flex-col py-2 px-6 gap-y-2 w-full">
+      <div class="link-container col-span-3 bg-white py-2 px-6 hidden overflow-y-auto" child-link-container>
+        <ul class="cursor-pointer text-xl text-center flex flex-col gap-y-2 w-full">
           <span class="p-[8px] h-[44px]">
             <h1 class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"></h1>
           </span>
@@ -141,7 +161,7 @@
             {% endfor %}
           {% endfor %}
         </ul>
-        {{ special_custom_categories }}
+        {{ child_menu_custom_categories }}
       </div>
       <div class="link-container col-span-3 bg-white py-2 px-6 hidden overflow-y-auto" grand-child-link-container>
         <ul class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full">
@@ -172,7 +192,7 @@
             {% endfor %}
           {% endfor %}
         </ul>
-        {{ special_custom_categories }}
+        {{ grand_child_menu_custom_categories }}
       </div>
       <div
         class="link-container col-span-3 bg-white py-8 px-6 hidden overflow-y-auto gap-y-6"
