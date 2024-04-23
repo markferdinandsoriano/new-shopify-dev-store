@@ -1,14 +1,10 @@
 {% liquid
   assign parent_links = linklists['main-menu'].links
-
-  for parent_link in linklists['main-menu'].links
-    assign child_links = parent_link.links
-  endfor
 %}
 
 <div class="w-full h-auto">
-  <navigation-large-screen class="hidden show-large-screen">
-    <div class="flex flex-row items-center fixed top-2 left-2 w-[124px]">
+  <navigation-large-screen class="fixed hidden show-large-screen flex-col h-full w-full">
+    <div class="flex flex-row items-start mt-[1rem] w-[124px] h-[8%]">
       <div class="py-2 px-3">
         <button id="nav-icon" class="flex items-center justify-center text-black w-[1.5rem] h-[1.5rem]">
           <span class="hamburger-icon">
@@ -24,38 +20,47 @@
 
     <div
       id="nav-contents-desktop"
-      class="hidden fixed top-[8.5rem] left-0 grid-cols-12 w-full h-screen"
+      class="hidden grid-cols-12 w-full h-[92%]"
     >
-      <div class="link-container col-span-3 bg-white py-2 px-6 overflow-y-auto">
-        <ul class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-1 w-full">
+      <div class="link-container col-span-3 bg-white py-2 px-6 overflow-y-auto h-full">
+        <ul class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full">
           {% for parent_link_value in parent_links %}
             <button
-              class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn parent-link-btn"
+              class="w-full flex flex-row items-center justify-between p-[8px] text-[#000000] h-[44px] hover-btn parent-link-btn"
               data-index="{{ forloop.index0 }}"
               data-title="{{ parent_link_value.title }}"
             >
-              <span class="text-[18px] pointer-events-none parent-link-title">
+              <span class="text-[18px] font-normal pointer-events-none parent-link-title">
                 {{ parent_link_value.title }}
               </span>
               {% if parent_link_value.links != blank %}
                 <span class="block w-[1.125rem] h-[1.125rem] pointer-events-none parent-link-icon">
-                  {% render 'chevron-right' %}
+                  {% render 'chevron-right', color: '#000000' %}
                 </span>
               {% endif %}
             </button>
           {% endfor %}
         </ul>
       </div>
-      <div class="link-container col-span-3 bg-white py-2 px-6 hidden overflow-y-auto" child-link-container>
-        <ul class="text-black text-xl text-center">
+      <div class="link-container col-span-3 bg-white hidden overflow-y-auto" child-link-container>
+        <ul class="cursor-pointer text-xl text-center flex flex-col py-2 px-6 gap-y-2 w-full">
+          <span class="p-[8px] h-[44px]">
+            <h1 class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"></h1>
+          </span>
+          <span class="p-[8px] h-[44px]">
+            <h1
+              class="text-[18px] text-left text-[#5E6F77] font-normal pointer-events-none child-secondary-header"
+            ></h1>
+          </span>
+
           {% for parent_link_value in parent_links %}
             {% for child_link in parent_link_value.links %}
               <button
-                class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn child-link-btn"
+                class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn text-black child-link-btn"
                 data-title="{{ parent_link_value.title }}"
                 data-child-title="{{ child_link.title }}"
               >
-                <span class="text-[18px] pointer-events-none child-link-title">
+                <span class="text-[18px] font-normal pointer-events-none child-link-title">
                   {{ child_link.title }}
                 </span>
                 {% if child_link.links != blank %}
@@ -69,7 +74,17 @@
         </ul>
       </div>
       <div class="link-container col-span-3 bg-white py-2 px-6 hidden overflow-y-auto" grand-child-link-container>
-        <ul class="text-black text-xl text-center">
+        <ul class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full">
+          <span class="p-[8px] h-[44px]">
+            <h1 class="text-[18px] text-left text-[#373737] font-bold pointer-events-none grand-child-main-header">
+              Computers
+            </h1>
+          </span>
+          <span class="p-[8px] h-[44px]">
+            <h1 class="text-[18px] text-left text-[#5E6F77] font-normal pointer-events-none grand-child-secondary-header">
+              See All Computers
+            </h1>
+          </span>
           {% for parent_link_value in parent_links %}
             {% for child_link in parent_link_value.links %}
               {% for grand_child_link in child_link.links %}
@@ -79,7 +94,7 @@
                   data-child-title="{{ child_link.title }}"
                   data-grand-child-title="{{ grand_child_link.title }}"
                 >
-                  <span class="text-[18px] pointer-events-none grand-child-link-title">
+                  <span class="text-[18px] font-normal pointer-events-none grand-child-link-title">
                     {{ grand_child_link.title }}
                   </span>
                 </button>
@@ -87,6 +102,67 @@
             {% endfor %}
           {% endfor %}
         </ul>
+      </div>
+      <div
+        class="link-container col-span-3 bg-white py-8 px-6 hidden overflow-y-auto gap-y-6"
+        custom-image-container
+      >
+        <div class="w-full h-[30%]">
+          <img
+            src="{{ 'mcafee.png' | asset_url }}"
+            width="100%"
+            height="100%"
+          >
+        </div>
+        <div class="w-full h-[30%]">
+          <img
+            src="{{ 'microsoft.png' | asset_url }}"
+            width="100%"
+            height="100%"
+          >
+        </div>
+        <div class="w-full h-[30%]">
+          <img
+            src="{{ 'mcafee.png' | asset_url }}"
+            width="100%"
+            height="100%"
+          >
+        </div>
+        <div class="w-full h-[30%]">
+          <img
+            src="{{ 'microsoft.png' | asset_url }}"
+            width="100%"
+            height="100%"
+          >
+        </div>
+        <div class="w-full h-[30%]">
+          <img
+            src="{{ 'mcafee.png' | asset_url }}"
+            width="100%"
+            height="100%"
+          >
+        </div>
+        <div class="w-full h-[30%]">
+          <img
+            src="{{ 'microsoft.png' | asset_url }}"
+            width="100%"
+            height="100%"
+          >
+        </div>
+        <div class="w-full h-[30%]">
+          <img
+            src="{{ 'mcafee.png' | asset_url }}"
+            width="100%"
+            height="100%"
+          >
+        </div>
+        <div class="w-full h-[30%]">
+          <img
+            src="{{ 'microsoft.png' | asset_url }}"
+            width="100%"
+            height="100%"
+          >
+        </div>
       </div>
     </div>
   </navigation-large-screen>
@@ -101,81 +177,107 @@
       </div>
     </div>
     <div id="menu-content" class="fixed top-0 left-0 w-full hidden grid-cols-4 h-screen">
-      <div class="col-span-3 bg-white">
-        <div class="flex flex-row w-full py-4 px-4 justify-center items-center">
-          <button
-            id="back-menu-btn"
-            class="hidden flex justify-center text-black w-[10%]"
-            data-link-level
-            data-parent-title
+      <div class="col-span-3 bg-white h-fit">
+        <div class="display-grid grid-cols-4 w-full py-1 px-1.5 justify-center items-center h-[5vh]">
+          <div
+            class="display-grid justify-center col-span-1 w-full text-center text-black"
           >
-            <span class="block w-[18px] h-[18px] pointer-events-none parent-link-icon">
-              {% render 'chevron-left' %}
-            </span>
-          </button>
-          <span class="w-[90%] text-center">
-            <h1 class="text-black text-4xl title-header">HARVEY NORMAN</h1>
-          </span>
-          <button id="close-menu" class="flex justify-center text-black w-[10%]">
-            <span class="block w-[1.75rem] h-[1.75rem] pointer-events-none">
-              {% render 'exit-icon' %}
-            </span>
-          </button>
-        </div>
-        <ul class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-1 w-full">
-          {% for parent_link_value in parent_links %}
             <button
-              class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn parent-link-btn"
-              data-index="{{ forloop.index0 }}"
-              data-title="{{ parent_link_value.title }}"
+              id="back-menu-btn"
+              class="hidden w-[1.5rem] h-[1.5rem] parent-link-icon"
+              data-link-level
+              data-parent-title
             >
-              <span class="text-[18px] pointer-events-none parent-link-title">
-                {{ parent_link_value.title }}
-              </span>
-              {% if parent_link_value.links != blank %}
-                <span class="block w-[18px] h-[18px] pointer-events-none parent-link-icon">
-                  {% render 'chevron-right' %}
-                </span>
-              {% endif %}
+              {% render 'chevron-left' %}
             </button>
-            {% for child_link in parent_link_value.links %}
+          </div>
+          <div class="text-left col-span-2 w-full">
+            <h1 class="text-black text-4xl title-header">HARVEY NORMAN</h1>
+          </div>
+          <div class="display-grid justify-center col-span-1 w-full text-black">
+            <button id="close-menu" class="block w-[1.5rem] h-[1.5rem]">
+              {% render 'exit-icon' %}
+            </button>
+          </div>
+        </div>
+        <div class="link-container p-2 overflow-y-auto h-[95vh]">
+          <ul class="cursor-pointer text-[#373737] text-xl text-center flex flex-col gap-y-1 w-full h-auto">
+            {% for parent_link_value in parent_links %}
               <button
-                class="hidden w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn child-link-btn"
+                class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn parent-link-btn"
                 data-index="{{ forloop.index0 }}"
                 data-title="{{ parent_link_value.title }}"
-                data-child-title="{{ child_link.title }}"
-                data-link-level="child"
               >
                 <span class="text-[18px] pointer-events-none parent-link-title">
-                  {{ child_link.title }}
+                  {{ parent_link_value.title }}
                 </span>
-                {% if child_link.links != blank %}
-                  <span class="block w-[18px] h-[18px] pointer-events-none parent-link-icon">
+                {% if parent_link_value.links != blank %}
+                  <span class="block w-[1.5rem] h-[1.5rem] pointer-events-none parent-link-icon">
                     {% render 'chevron-right' %}
                   </span>
                 {% endif %}
               </button>
-
-              {% for grand_child_link in child_link.links %}
+              {% for child_link in parent_link_value.links %}
                 <button
-                  class="hidden w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn grand-child-link-btn"
+                  class="hidden w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn child-link-btn"
                   data-index="{{ forloop.index0 }}"
-                  data-title="{{ child_link.title }}"
-                  data-link-level="grand-child"
+                  data-title="{{ parent_link_value.title }}"
+                  data-child-title="{{ child_link.title }}"
+                  data-link-level="child"
                 >
-                  <span class="text-[18px] pointer-events-none grand-parent-link-title">
-                    {{ grand_child_link.title }}
+                  <span class="text-[18px] pointer-events-none parent-link-title">
+                    {{ child_link.title }}
                   </span>
-                  {% if grand_child_link.links != blank %}
-                    <span class="block w-[18px] h-[18px] pointer-events-none grand-parent-link-icon">
+                  {% if child_link.links != blank %}
+                    <span class="block w-[1.5rem] h-[1.5rem] pointer-events-none parent-link-icon">
                       {% render 'chevron-right' %}
                     </span>
                   {% endif %}
                 </button>
+
+                {% for grand_child_link in child_link.links %}
+                  <button
+                    class="hidden w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn grand-child-link-btn"
+                    data-index="{{ forloop.index0 }}"
+                    data-title="{{ child_link.title }}"
+                    data-link-level="grand-child"
+                  >
+                    <span class="text-[18px] pointer-events-none grand-parent-link-title">
+                      {{ grand_child_link.title }}
+                    </span>
+                    {% if grand_child_link.links != blank %}
+                      <span class="block w-[1.5rem] h-[1.5rem] pointer-events-none grand-parent-link-icon">
+                        {% render 'chevron-right' %}
+                      </span>
+                    {% endif %}
+                  </button>
+                {% endfor %}
               {% endfor %}
             {% endfor %}
-          {% endfor %}
-        </ul>
+            <div class="account-menu flex flex-col gap-y-1 w-full h-auto bg-[#F3F4F5]">
+              <button
+                class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn parent-link-btn"
+              >
+                <span class="text-[18px] pointer-events-none parent-link-title"> Account </span>
+              </button>
+              <button
+                class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn parent-link-btn"
+              >
+                <span class="text-[18px] pointer-events-none parent-link-title"> NewsLetter </span>
+              </button>
+              <button
+                class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn parent-link-btn"
+              >
+                <span class="text-[18px] pointer-events-none parent-link-title"> Stores </span>
+              </button>
+              <button
+                class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn parent-link-btn"
+              >
+                <span class="text-[18px] pointer-events-none parent-link-title"> Contact us </span>
+              </button>
+            </div>
+          </ul>
+        </div>
       </div>
     </div>
   </navigation-mobile-screen>
@@ -197,8 +299,24 @@
 {
   "name": "navigation-menu",
   "class": "navigation-menu-section",
-  "enabled_on": {
-    "groups": ["header"]
-  }
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Custom menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Hello, world!"
+        },
+        {
+          "type": "link_list",
+          "id": "custom_menu",
+          "label": "Custom Menu"
+        }
+      ]
+    }
+  ]
 }
 {% endschema %}

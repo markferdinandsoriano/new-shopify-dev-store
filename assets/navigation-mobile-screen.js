@@ -119,8 +119,8 @@ class NavigationMobileScreen extends HTMLElement {
         const backMenuBtn = this.querySelector('#back-menu-btn');
         const titleHeader = this.querySelector('.title-header');
         backMenuBtn.addEventListener('click', (e) => {
-            const linkLevel = e.target.getAttribute('data-link-level');
-            const parentTitle = e.target.getAttribute('data-parent-title');
+            const linkLevel = backMenuBtn.getAttribute('data-link-level');
+            const parentTitle = backMenuBtn.getAttribute('data-parent-title');
             const childLinkBtnElements = this.querySelectorAll('.child-link-btn');
             const parentLinkBtn = this.querySelectorAll('.parent-link-btn');
 
