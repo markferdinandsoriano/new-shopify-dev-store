@@ -71,7 +71,9 @@ class NavigationLargeScreen extends HTMLElement {
                     this.toggleShowChildLink(parentLinkTitle);
                 } else {
                     const childLinksElement = this.querySelector('[child-link-container]');
+                    const grandChildLinksElement = this.querySelector('[grand-child-link-container]');
                     childLinksElement.classList.add('hidden');
+                    grandChildLinksElement.classList.add('hidden');
                     customImageContainer.classList.add('hidden');
                     customImageContainer.classList.remove('display-grid');
                 }
