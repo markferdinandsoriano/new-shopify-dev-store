@@ -13,10 +13,30 @@
             "menu_level": "child-menu",
             "custom_menu": "sales-promotions"
           }
+        },
+        "heading_G7zxbt": {
+          "type": "heading",
+          "settings": {
+            "heading": "Shopping Help",
+            "parent_link": "Computers, Tablets & Printers",
+            "menu_level": "child-menu",
+            "custom_menu": "shopping-help"
+          }
+        },
+        "heading_9LPK84": {
+          "type": "heading",
+          "settings": {
+            "heading": "Shop by Brand",
+            "parent_link": "Computers",
+            "menu_level": "grand-child-menu",
+            "custom_menu": "shop-by-brand"
+          }
         }
       },
       "block_order": [
-        "heading_PxA3ka"
+        "heading_PxA3ka",
+        "heading_G7zxbt",
+        "heading_9LPK84"
       ],
       "settings": {
       }

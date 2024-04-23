@@ -2,6 +2,74 @@
   assign parent_links = linklists['main-menu'].links
 %}
 
+{% capture special_custom_categories %}
+{% for block in section.blocks %}
+  {% case block.type %}
+    {% when 'heading' %}
+      <hr>
+      {% if block.settings.menu_level == 'parent-menu' %}
+        <ul class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full">
+          <span class="p-[8px] h-[44px]">
+            <h1
+              class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
+            >
+              {{ block.settings.heading }}
+            </h1>
+          </span>
+        </ul>
+        {% elsif block.settings.menu_level == 'child-menu' %}
+        <ul class="cursor-pointer text-xl text-center flex flex-col py-2 px-6 gap-y-2 w-full">
+          <span class="p-[8px] h-[44px] pointer-events-none">
+            <h1
+              class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
+            >
+              {{ block.settings.heading }}
+            </h1>
+          </span>
+          {% for special_child_menu in block.settings.custom_menu.links %}
+            <button
+              class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn text-black child-link-btn"
+              data-title="{{ block.settings.parent_link }}"
+              data-child-title="{{ special_child_menu.title }}"
+            >
+              <span class="text-[18px] font-normal pointer-events-none child-link-title">
+                {{ special_child_menu.title }}
+              </span>
+              {% if special_child_menu.links != blank %}
+                <span class="block w-[1.125rem] h-[1.125rem] pointer-events-none parent-link-icon">
+                  {% render 'chevron-right' %}
+                </span>
+              {% endif %}
+            </button>
+          {% endfor %}
+        </ul>
+        {% elsif block.settings.menu_level == 'grand-child-menu' %}
+        <ul class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full">
+          <span class="p-[8px] h-[44px] pointer-events-none">
+            <h1
+              class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
+            >
+              {{ block.settings.heading }}
+            </h1>
+          </span>
+          {% for special_grand_child_menu in block.settings.custom_menu.links %}
+            <button
+              class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn grand-child-link-btn"
+              data-title="{{ block.settings.parent_link }}"
+              data-child-title="{{ block.settings.parent_link }}"
+              data-grand-child-title="{{ special_grand_child_menu.title }}"
+            >
+              <span class="text-[18px] font-normal pointer-events-none child-link-title">
+                {{ special_grand_child_menu.title }}
+              </span>
+            </button>
+          {% endfor %}
+        </ul>
+      {% endif %}
+  {% endcase %}
+{% endfor %}
+{% endcapture %}
+
 <div class="w-full h-auto">
   <navigation-large-screen class="fixed hidden show-large-screen flex-col h-full w-full">
     <div class="flex flex-row items-start mt-[1rem] w-[124px] h-[8%]">
@@ -41,23 +109,7 @@
             </button>
           {% endfor %}
         </ul>
-        <hr>
-        {% for block in section.blocks %}
-          {% case block.type %}
-            {% when 'heading' %}
-              {% if block.settings.menu_level == 'parent-menu' %}
-                <ul class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full">
-                  <span class="p-[8px] h-[44px]">
-                    <h1
-                      class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
-                    >
-                      {{ block.settings.heading }}
-                    </h1>
-                  </span>
-                </ul>
-              {% endif %}
-          {% endcase %}
-        {% endfor %}
+        {{ special_custom_categories }}
       </div>
       <div class="link-container col-span-3 bg-white hidden overflow-y-auto" child-link-container>
         <ul class="cursor-pointer text-xl text-center flex flex-col py-2 px-6 gap-y-2 w-full">
@@ -89,6 +141,7 @@
             {% endfor %}
           {% endfor %}
         </ul>
+        {{ special_custom_categories }}
       </div>
       <div class="link-container col-span-3 bg-white py-2 px-6 hidden overflow-y-auto" grand-child-link-container>
         <ul class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full">
@@ -119,6 +172,7 @@
             {% endfor %}
           {% endfor %}
         </ul>
+        {{ special_custom_categories }}
       </div>
       <div
         class="link-container col-span-3 bg-white py-8 px-6 hidden overflow-y-auto gap-y-6"
