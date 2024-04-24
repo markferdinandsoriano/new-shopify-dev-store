@@ -10,7 +10,7 @@
           "settings": {
             "heading": "Sales & Promotions",
             "parent_link": "Computers, Tablets & Printers",
-            "menu_level": "child-menu",
+            "menu_level": "level 1",
             "custom_menu": "sales-promotions"
           }
         },
@@ -19,7 +19,7 @@
           "settings": {
             "heading": "Shopping Help",
             "parent_link": "Computers, Tablets & Printers",
-            "menu_level": "child-menu",
+            "menu_level": "level 1",
             "custom_menu": "shopping-help"
           }
         },
@@ -28,7 +28,7 @@
           "settings": {
             "heading": "Shop by Brand",
             "parent_link": "Computers",
-            "menu_level": "grand-child-menu",
+            "menu_level": "level 2",
             "custom_menu": "shop-by-brand"
           }
         }

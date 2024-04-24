@@ -1,15 +1,10 @@
-{% liquid
-  assign parent_links = linklists['main-menu'].links
-%}
-
-{% capture parent_menu_custom_categories %}
+{% capture custom_menu_categories %}
 {% for block in section.blocks %}
   {% case block.type %}
     {% when 'heading' %}
-      {% if block.settings.menu_level == 'parent-menu' %}
-       
+      {% if block.settings.menu_level == 'root-level' %}
         <ul 
-          data-menu-title="{{ 'parent-menu' }}"
+          data-menu-title="{{ 'root-level' }}"
           class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full">
           <hr>
           <span class="p-[8px] h-[44px]">
@@ -20,19 +15,9 @@
             </h1>
           </span>
         </ul>
-      {% endif %}
-  {% endcase %}
-{% endfor %}
-{% endcapture %}
-
-{% capture child_menu_custom_categories %}
-{% for block in section.blocks %}
-  {% case block.type %}
-    {% when 'heading' %}
-      {% if block.settings.menu_level == 'child-menu' %}
-       
+        {% elsif block.settings.menu_level == 'level 1' %}
         <ul 
-          data-menu-title="{{ 'child-menu' }}"        
+          data-menu-title="{{ 'level 1' }}"        
           data-title="{{ block.settings.parent_link }}"
           class="cursor-pointer text-xl text-center flex flex-col gap-y-2 w-full child-link-btn">
           <hr>
@@ -60,43 +45,33 @@
             </button>
           {% endfor %}
         </ul>
-      {% endif %}
-  {% endcase %}
-{% endfor %}
-{% endcapture %}
-
-{% capture grand_child_menu_custom_categories %}
-{% for block in section.blocks %}
-  {% case block.type %}
-    {% when 'heading' %}
-      {% if block.settings.menu_level == 'grand-child-menu' %}
-       
-        <ul    
-          data-menu-title="{{ 'grand-child-menu' }}"        
-          data-title="{{ block.settings.parent_link }}"
-          data-child-title="{{ block.settings.parent_link }}"
-          class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full grand-child-link-btn">
-          <hr>
-          <span class="p-[8px] h-[44px] pointer-events-none custom-grand-child-title">
-            <h1
-              class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
-            >
-              {{ block.settings.heading }}
-            </h1>
-          </span>
-          {% for special_grand_child_menu in block.settings.custom_menu.links %}
-            <button
-              class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn grand-child-link-btn"
-              data-title="{{ block.settings.parent_link }}"
-              data-child-title="{{ block.settings.parent_link }}"
-              data-grand-child-title="{{ special_grand_child_menu.title }}"
-            >
-              <span class="text-[18px] font-normal pointer-events-none child-link-title">
-                {{ special_grand_child_menu.title }}
-              </span>
-            </button>
-          {% endfor %}
-        </ul>
+      {% elsif  block.settings.menu_level == 'level 2'%}
+      <ul    
+        data-menu-title="{{ 'grand-child-menu' }}"        
+        data-title="{{ block.settings.parent_link }}"
+        data-child-title="{{ block.settings.parent_link }}"
+        class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full grand-child-link-btn">
+        <hr>
+        <span class="p-[8px] h-[44px] pointer-events-none custom-grand-child-title">
+          <h1
+            class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
+          >
+            {{ block.settings.heading }}
+          </h1>
+        </span>
+        {% for special_grand_child_menu in block.settings.custom_menu.links %}
+          <button
+            class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn grand-child-link-btn"
+            data-title="{{ block.settings.parent_link }}"
+            data-child-title="{{ block.settings.parent_link }}"
+            data-grand-child-title="{{ special_grand_child_menu.title }}"
+          >
+            <span class="text-[18px] font-normal pointer-events-none child-link-title">
+              {{ special_grand_child_menu.title }}
+            </span>
+          </button>
+        {% endfor %}
+      </ul>
       {% endif %}
   {% endcase %}
 {% endfor %}
@@ -165,16 +140,12 @@
 
 <div class="w-full h-auto">
   {% render 'navigation-menu-large-screen',
-    parent_menu_custom_categories: parent_menu_custom_categories,
-    child_menu_custom_categories: child_menu_custom_categories,
-    grand_child_menu_custom_categories: grand_child_menu_custom_categories,
+    custom_menu_categories: custom_menu_categories,
     custom_images: custom_images
   %}
 
   {% render 'navigation-menu-mobile-screen',
-    parent_menu_custom_categories: parent_menu_custom_categories,
-    child_menu_custom_categories: child_menu_custom_categories,
-    grand_child_menu_custom_categories: grand_child_menu_custom_categories,
+    custom_menu_categories: custom_menu_categories,
     custom_images: custom_images
   %}
 </div>
@@ -196,7 +167,7 @@
         {
           "type": "text",
           "id": "parent_link",
-          "label": "Parent Link"
+          "label": "Root Level Link"
         },
         {
           "type": "select",
@@ -204,23 +175,23 @@
           "label": "Select Link Level",
           "options": [
             {
-              "value": "parent-menu",
-              "label": "Parent menu"
+              "value": "root level",
+              "label": "Root level"
             },
             {
-              "value": "child-menu",
-              "label": "Child menu"
+              "value": "level 1",
+              "label": "Level 1"
             },
             {
-              "value": "grand-child-menu",
-              "label": "Grand Child menu"
+              "value": "level 2",
+              "label": "Level 2"
             }
           ]
         },
         {
           "type": "link_list",
           "id": "custom_menu",
-          "label": "Custom Menu"
+          "label": "Special Categories menu"
         }
       ]
     }

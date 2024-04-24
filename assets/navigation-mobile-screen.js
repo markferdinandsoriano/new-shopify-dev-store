@@ -73,19 +73,20 @@ class NavigationMobileScreen extends HTMLElement {
             parentLinkBtnElement.addEventListener('click', (e) => {
                 const parentLinkTitle = e.target.getAttribute('data-title');
                 const childLinkBtnElements = this.querySelectorAll('.child-link-btn');
+                const customImages = this.querySelector('.custom-images');
 
                 titleHeader.textContent = parentLinkTitle;
                 backMenuBtn.classList.remove('hidden');
                 backMenuBtn.setAttribute('data-link-level', 'child');
                 backMenuBtn.setAttribute('data-parent-title', parentLinkTitle);
+                customImages.classList.remove('hidden');
 
                 childLinkBtnElements.forEach((childLinkBtnElement) => {
                     const childLinkParentTitle = childLinkBtnElement.getAttribute('data-title');
                     const childLinkTitle = childLinkBtnElement.getAttribute('data-child-title');
 
-
                     if (parentLinkTitle === childLinkParentTitle) {
-                        childLinkBtnElement.classList.toggle('hidden');
+                        childLinkBtnElement.classList.remove('hidden');
 
                         childLinkBtnElement.addEventListener('click', (e) => {
 
@@ -111,8 +112,8 @@ class NavigationMobileScreen extends HTMLElement {
     toggleShowGrandChildLinks(e, childLinkBtnElements) {
         const childLinkTitle = e.target.getAttribute('data-child-title');
         const grandChildLinkBtnElements = this.querySelectorAll('.grand-child-link-btn');
-
-
+        const customImages = this.querySelector('.custom-images');
+        customImages.classList.remove('hidden');
 
         grandChildLinkBtnElements.forEach((grandChildLinkBtnElement) => {
             const grandChildLinktTitle = grandChildLinkBtnElement.getAttribute('data-title');
