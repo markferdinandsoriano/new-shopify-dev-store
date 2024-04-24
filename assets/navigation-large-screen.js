@@ -80,9 +80,11 @@ class NavigationLargeScreen extends HTMLElement {
 
                 parentLinkBtn.forEach((parentLinkNotFocusBtn, _parentLinkBtnIndex = index) => {
                     const _chevronRightIcon = parentLinkNotFocusBtn.querySelector('.chevron-right-icon > path');
+                    const grandChildContainer = this.querySelector('[grand-child-link-container]');
                     if (parentLinkBtnIndex !== _parentLinkBtnIndex) {
                         parentLinkNotFocusBtn.classList.remove('focus-btn');
                         parentLinkNotFocusBtn.classList.add('hover-btn');
+                        grandChildContainer.classList.add('hidden');
 
                         if (_chevronRightIcon) {
                             _chevronRightIcon.setAttribute('fill', '#000000')
@@ -130,7 +132,6 @@ class NavigationLargeScreen extends HTMLElement {
                         const grandChildLinksElement = this.querySelector('[grand-child-link-container]');
                         grandChildLinksElement.classList.add('hidden');
                     }
-
 
 
                     childLinkBtnElements.forEach((childLinkNotFocusBtn) => {

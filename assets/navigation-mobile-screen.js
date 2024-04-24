@@ -21,6 +21,7 @@ class NavigationMobileScreen extends HTMLElement {
             const grandChildLinkBtnElements = this.querySelectorAll('.grand-child-link-btn');
             const childLinkBtnElements = this.querySelectorAll('.child-link-btn');
 
+
             menuContent.classList.remove('display-grid');
             menuContent.classList.add('hidden');
             titleHeader.textContent = 'HARVEY NORMAN';
@@ -53,7 +54,20 @@ class NavigationMobileScreen extends HTMLElement {
         const parentLinkBtn = this.querySelectorAll('.parent-link-btn');
         const titleHeader = this.querySelector('.title-header');
         const backMenuBtn = this.querySelector('#back-menu-btn');
+        const childCustomMenu = this.querySelectorAll('[data-menu-title="child-menu"]');
+        const grandChildCustomMenu = this.querySelectorAll('[data-menu-title="grand-child-menu"]');
 
+        const customImages = this.querySelector('.custom-images');
+
+        childCustomMenu.forEach((customMenuElement) => {
+            customMenuElement.classList.add('hidden');
+        })
+
+        grandChildCustomMenu.forEach((customMenuElement) => {
+            customMenuElement.classList.add('hidden');
+        })
+
+        customImages.classList.add('hidden');
 
         parentLinkBtn.forEach((parentLinkBtnElement) => {
             parentLinkBtnElement.addEventListener('click', (e) => {

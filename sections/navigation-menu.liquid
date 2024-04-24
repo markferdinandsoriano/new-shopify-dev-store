@@ -7,8 +7,11 @@
   {% case block.type %}
     {% when 'heading' %}
       {% if block.settings.menu_level == 'parent-menu' %}
-        <hr>
-        <ul class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full">
+       
+        <ul 
+          data-menu-title="{{ 'parent-menu' }}"
+          class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full">
+          <hr>
           <span class="p-[8px] h-[44px]">
             <h1
               class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
@@ -27,8 +30,12 @@
   {% case block.type %}
     {% when 'heading' %}
       {% if block.settings.menu_level == 'child-menu' %}
-        <hr>
-        <ul class="cursor-pointer text-xl text-center flex flex-col gap-y-2 w-full">
+       
+        <ul 
+          data-menu-title="{{ 'child-menu' }}"        
+          data-title="{{ block.settings.parent_link }}"
+          class="cursor-pointer text-xl text-center flex flex-col gap-y-2 w-full child-link-btn">
+          <hr>
           <span class="p-[8px] h-[44px] pointer-events-none">
             <h1
               class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
@@ -63,9 +70,14 @@
   {% case block.type %}
     {% when 'heading' %}
       {% if block.settings.menu_level == 'grand-child-menu' %}
-        <hr>
-        <ul class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full">
-          <span class="p-[8px] h-[44px] pointer-events-none">
+       
+        <ul    
+          data-menu-title="{{ 'grand-child-menu' }}"        
+          data-title="{{ block.settings.parent_link }}"
+          data-child-title="{{ block.settings.parent_link }}"
+          class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full grand-child-link-btn">
+          <hr>
+          <span class="p-[8px] h-[44px] pointer-events-none custom-grand-child-title">
             <h1
               class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
             >
@@ -90,301 +102,82 @@
 {% endfor %}
 {% endcapture %}
 
-<div class="w-full h-auto">
-  <navigation-large-screen class="fixed hidden show-large-screen flex-col h-full w-full">
-    <div class="flex flex-row items-start mt-[1rem] w-[124px] h-[8%]">
-      <div class="py-2 px-3">
-        <button id="nav-icon" class="flex items-center justify-center text-black w-[1.5rem] h-[1.5rem]">
-          <span class="hamburger-icon">
-            {% render 'icon-hamburger' %}
-          </span>
-          <span class="exit-icon hidden">
-            {% render 'exit-icon' %}
-          </span>
-        </button>
-      </div>
-      <h1 class="text-black text-[22px]">Shop</h1>
-    </div>
-
-    <div
-      id="nav-contents-desktop"
-      class="hidden grid-cols-12 w-full h-[92%]"
+{% capture custom_images %}
+<ul class="custom-images gap-y-6  py-8 px-6">
+  <div class="w-full h-[30%]">
+    <img
+      src="{{ 'mcafee.png' | asset_url }}"
+      width="100%"
+      height="100%"
     >
-      <div class="link-container col-span-3 bg-white py-2 px-6 overflow-y-auto h-full">
-        <ul class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full">
-          {% for parent_link_value in parent_links %}
-            <button
-              class="w-full flex flex-row items-center justify-between p-[8px] text-[#000000] h-[44px] hover-btn parent-link-btn"
-              data-index="{{ forloop.index0 }}"
-              data-title="{{ parent_link_value.title }}"
-            >
-              <span class="text-[18px] font-normal pointer-events-none parent-link-title">
-                {{ parent_link_value.title }}
-              </span>
-              {% if parent_link_value.links != blank %}
-                <span class="block w-[1.125rem] h-[1.125rem] pointer-events-none parent-link-icon">
-                  {% render 'chevron-right', color: '#000000' %}
-                </span>
-              {% endif %}
-            </button>
-          {% endfor %}
-        </ul>
-        {{ parent_menu_custom_categories }}
-      </div>
-      <div class="link-container col-span-3 bg-white py-2 px-6 hidden overflow-y-auto" child-link-container>
-        <ul class="cursor-pointer text-xl text-center flex flex-col gap-y-2 w-full">
-          <span class="p-[8px] h-[44px]">
-            <h1 class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"></h1>
-          </span>
-          <span class="p-[8px] h-[44px]">
-            <h1
-              class="text-[18px] text-left text-[#5E6F77] font-normal pointer-events-none child-secondary-header"
-            ></h1>
-          </span>
+  </div>
+  <div class="w-full h-[30%]">
+    <img
+      src="{{ 'microsoft.png' | asset_url }}"
+      width="100%"
+      height="100%"
+    >
+  </div>
+  <div class="w-full h-[30%]">
+    <img
+      src="{{ 'mcafee.png' | asset_url }}"
+      width="100%"
+      height="100%"
+    >
+  </div>
+  <div class="w-full h-[30%]">
+    <img
+      src="{{ 'microsoft.png' | asset_url }}"
+      width="100%"
+      height="100%"
+    >
+  </div>
+  <div class="w-full h-[30%]">
+    <img
+      src="{{ 'mcafee.png' | asset_url }}"
+      width="100%"
+      height="100%"
+    >
+  </div>
+  <div class="w-full h-[30%]">
+    <img
+      src="{{ 'microsoft.png' | asset_url }}"
+      width="100%"
+      height="100%"
+    >
+  </div>
+  <div class="w-full h-[30%]">
+    <img
+      src="{{ 'mcafee.png' | asset_url }}"
+      width="100%"
+      height="100%"
+    >
+  </div>
+  <div class="w-full h-[30%]">
+    <img
+      src="{{ 'microsoft.png' | asset_url }}"
+      width="100%"
+      height="100%"
+    >
+  </div>
+</ul>
+{% endcapture %}
 
-          {% for parent_link_value in parent_links %}
-            {% for child_link in parent_link_value.links %}
-              <button
-                class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn text-black child-link-btn"
-                data-title="{{ parent_link_value.title }}"
-                data-child-title="{{ child_link.title }}"
-              >
-                <span class="text-[18px] font-normal pointer-events-none child-link-title">
-                  {{ child_link.title }}
-                </span>
-                {% if child_link.links != blank %}
-                  <span class="block w-[1.125rem] h-[1.125rem] pointer-events-none parent-link-icon">
-                    {% render 'chevron-right' %}
-                  </span>
-                {% endif %}
-              </button>
-            {% endfor %}
-          {% endfor %}
-        </ul>
-        {{ child_menu_custom_categories }}
-      </div>
-      <div class="link-container col-span-3 bg-white py-2 px-6 hidden overflow-y-auto" grand-child-link-container>
-        <ul class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full">
-          <span class="p-[8px] h-[44px]">
-            <h1 class="text-[18px] text-left text-[#373737] font-bold pointer-events-none grand-child-main-header">
-              Computers
-            </h1>
-          </span>
-          <span class="p-[8px] h-[44px]">
-            <h1 class="text-[18px] text-left text-[#5E6F77] font-normal pointer-events-none grand-child-secondary-header">
-              See All Computers
-            </h1>
-          </span>
-          {% for parent_link_value in parent_links %}
-            {% for child_link in parent_link_value.links %}
-              {% for grand_child_link in child_link.links %}
-                <button
-                  class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn grand-child-link-btn"
-                  data-title="{{ parent_link_value.title }}"
-                  data-child-title="{{ child_link.title }}"
-                  data-grand-child-title="{{ grand_child_link.title }}"
-                >
-                  <span class="text-[18px] font-normal pointer-events-none grand-child-link-title">
-                    {{ grand_child_link.title }}
-                  </span>
-                </button>
-              {% endfor %}
-            {% endfor %}
-          {% endfor %}
-        </ul>
-        {{ grand_child_menu_custom_categories }}
-      </div>
-      <div
-        class="link-container col-span-3 bg-white py-8 px-6 hidden overflow-y-auto gap-y-6"
-        custom-image-container
-      >
-        <div class="w-full h-[30%]">
-          <img
-            src="{{ 'mcafee.png' | asset_url }}"
-            width="100%"
-            height="100%"
-          >
-        </div>
-        <div class="w-full h-[30%]">
-          <img
-            src="{{ 'microsoft.png' | asset_url }}"
-            width="100%"
-            height="100%"
-          >
-        </div>
-        <div class="w-full h-[30%]">
-          <img
-            src="{{ 'mcafee.png' | asset_url }}"
-            width="100%"
-            height="100%"
-          >
-        </div>
-        <div class="w-full h-[30%]">
-          <img
-            src="{{ 'microsoft.png' | asset_url }}"
-            width="100%"
-            height="100%"
-          >
-        </div>
-        <div class="w-full h-[30%]">
-          <img
-            src="{{ 'mcafee.png' | asset_url }}"
-            width="100%"
-            height="100%"
-          >
-        </div>
-        <div class="w-full h-[30%]">
-          <img
-            src="{{ 'microsoft.png' | asset_url }}"
-            width="100%"
-            height="100%"
-          >
-        </div>
-        <div class="w-full h-[30%]">
-          <img
-            src="{{ 'mcafee.png' | asset_url }}"
-            width="100%"
-            height="100%"
-          >
-        </div>
-        <div class="w-full h-[30%]">
-          <img
-            src="{{ 'microsoft.png' | asset_url }}"
-            width="100%"
-            height="100%"
-          >
-        </div>
-      </div>
-    </div>
-  </navigation-large-screen>
-  <navigation-mobile-screen class="block sm:hidden">
-    <div class="flex flex-row items-center fixed top-2 left-2 w-[124px]">
-      <div class="py-2 px-3">
-        <button id="nav-icon" class="flex items-center justify-center text-black w-[1.5rem] h-[1.5rem]">
-          <span class="hamburger-icon">
-            {% render 'icon-hamburger' %}
-          </span>
-        </button>
-      </div>
-    </div>
-    <div id="menu-content" class="fixed top-0 left-0 w-full hidden grid-cols-4 h-screen">
-      <div class="col-span-3 bg-white h-fit">
-        <div class="display-grid grid-cols-4 w-full py-1 px-1.5 justify-center items-center h-[5vh]">
-          <div
-            class="display-grid justify-center col-span-1 w-full text-center text-black"
-          >
-            <button
-              id="back-menu-btn"
-              class="hidden w-[1.5rem] h-[1.5rem] parent-link-icon"
-              data-link-level
-              data-parent-title
-            >
-              {% render 'chevron-left' %}
-            </button>
-          </div>
-          <div class="text-left col-span-2 w-full">
-            <h1 class="text-black text-4xl title-header">HARVEY NORMAN</h1>
-          </div>
-          <div class="display-grid justify-center col-span-1 w-full text-black">
-            <button id="close-menu" class="block w-[1.5rem] h-[1.5rem]">
-              {% render 'exit-icon' %}
-            </button>
-          </div>
-        </div>
-        <div class="link-container p-2 overflow-y-auto h-[95vh]">
-          <ul class="cursor-pointer text-[#373737] text-xl text-center flex flex-col gap-y-1 w-full h-auto">
-            {% for parent_link_value in parent_links %}
-              <button
-                class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn parent-link-btn"
-                data-index="{{ forloop.index0 }}"
-                data-title="{{ parent_link_value.title }}"
-              >
-                <span class="text-[18px] pointer-events-none parent-link-title">
-                  {{ parent_link_value.title }}
-                </span>
-                {% if parent_link_value.links != blank %}
-                  <span class="block w-[1.5rem] h-[1.5rem] pointer-events-none parent-link-icon">
-                    {% render 'chevron-right' %}
-                  </span>
-                {% endif %}
-              </button>
-              {% for child_link in parent_link_value.links %}
-                <button
-                  class="hidden w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn child-link-btn"
-                  data-index="{{ forloop.index0 }}"
-                  data-title="{{ parent_link_value.title }}"
-                  data-child-title="{{ child_link.title }}"
-                  data-link-level="child"
-                >
-                  <span class="text-[18px] pointer-events-none parent-link-title">
-                    {{ child_link.title }}
-                  </span>
-                  {% if child_link.links != blank %}
-                    <span class="block w-[1.5rem] h-[1.5rem] pointer-events-none parent-link-icon">
-                      {% render 'chevron-right' %}
-                    </span>
-                  {% endif %}
-                </button>
+<div class="w-full h-auto">
+  {% render 'navigation-menu-large-screen',
+    parent_menu_custom_categories: parent_menu_custom_categories,
+    child_menu_custom_categories: child_menu_custom_categories,
+    grand_child_menu_custom_categories: grand_child_menu_custom_categories,
+    custom_images: custom_images
+  %}
 
-                {% for grand_child_link in child_link.links %}
-                  <button
-                    class="hidden w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn grand-child-link-btn"
-                    data-index="{{ forloop.index0 }}"
-                    data-title="{{ child_link.title }}"
-                    data-link-level="grand-child"
-                  >
-                    <span class="text-[18px] pointer-events-none grand-parent-link-title">
-                      {{ grand_child_link.title }}
-                    </span>
-                    {% if grand_child_link.links != blank %}
-                      <span class="block w-[1.5rem] h-[1.5rem] pointer-events-none grand-parent-link-icon">
-                        {% render 'chevron-right' %}
-                      </span>
-                    {% endif %}
-                  </button>
-                {% endfor %}
-              {% endfor %}
-            {% endfor %}
-            <div class="account-menu flex flex-col gap-y-1 w-full h-auto bg-[#F3F4F5]">
-              <button
-                class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn parent-link-btn"
-              >
-                <span class="text-[18px] pointer-events-none parent-link-title"> Account </span>
-              </button>
-              <button
-                class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn parent-link-btn"
-              >
-                <span class="text-[18px] pointer-events-none parent-link-title"> NewsLetter </span>
-              </button>
-              <button
-                class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn parent-link-btn"
-              >
-                <span class="text-[18px] pointer-events-none parent-link-title"> Stores </span>
-              </button>
-              <button
-                class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn parent-link-btn"
-              >
-                <span class="text-[18px] pointer-events-none parent-link-title"> Contact us </span>
-              </button>
-            </div>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </navigation-mobile-screen>
+  {% render 'navigation-menu-mobile-screen',
+    parent_menu_custom_categories: parent_menu_custom_categories,
+    child_menu_custom_categories: child_menu_custom_categories,
+    grand_child_menu_custom_categories: grand_child_menu_custom_categories,
+    custom_images: custom_images
+  %}
 </div>
-
-<script
-  type="module"
-  defer="defer"
-  src="{{ 'navigation-large-screen.js' | asset_url }}"
-></script>
-
-<script
-  type="module"
-  defer="defer"
-  src="{{ 'navigation-mobile-screen.js' | asset_url }}"
-></script>
 
 {% schema %}
 {
