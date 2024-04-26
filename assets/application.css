@@ -875,6 +875,10 @@ video {
   height: 100%;
 }
 
+.h-\[1px\] {
+  height: 1px;
+}
+
 .h-\[30\%\] {
   height: 30%;
 }
@@ -1943,6 +1947,11 @@ video {
 .bg-gray-200 {
   --tw-bg-opacity: 1;
   background-color: rgb(229 231 235 / var(--tw-bg-opacity));
+}
+
+.bg-red-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(127 29 29 / var(--tw-bg-opacity));
 }
 
 .bg-white {

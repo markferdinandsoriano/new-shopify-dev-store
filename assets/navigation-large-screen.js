@@ -56,7 +56,9 @@ class NavigationLargeScreen extends HTMLElement {
 
             if (!childLinkELement) return;
 
-            this.showCurrentMenu(parentLinkBtns, [
+            const isGrandChildLinkElementExist = childLinkELement.nextElementSibling.classList.contains('link-container');
+
+            let elementsToHide = [
                 {
                     element: childLinkELement,
                     method: 'add',
@@ -67,7 +69,19 @@ class NavigationLargeScreen extends HTMLElement {
                     method: ['add', 'remove'],
                     classNames: ['hidden', 'display-grid']
                 }
-            ], childLinkELement)
+            ]
+
+            if (isGrandChildLinkElementExist) {
+                const shallowCopyElementstoHide = [...elementsToHide, {
+                    element: childLinkELement.nextElementSibling,
+                    method: 'add',
+                    classNames: 'hidden'
+                }]
+
+                elementsToHide = shallowCopyElementstoHide
+            }
+
+            this.showCurrentMenu(parentLinkBtns, elementsToHide, childLinkELement)
 
         })
     }
@@ -103,20 +117,24 @@ class NavigationLargeScreen extends HTMLElement {
             const nextMenuHeaderTitle = nextLevelLinkContainerSelector.querySelector('.link-headers .link-title');
             const nextMenuSecondaryTitle = nextLevelLinkContainerSelector.querySelector('.link-headers .link-secondary-title');
 
-            nextMenuHeaderTitle.textContent = parentTitle;
-            nextMenuSecondaryTitle.textContent = `See All ${parentTitle}`
+            if (nextMenuHeaderTitle && nextMenuSecondaryTitle) {
+                nextMenuHeaderTitle.textContent = parentTitle;
+                nextMenuSecondaryTitle.textContent = `See All ${parentTitle}`
+            }
 
             const notSelectedBtnLinkElements = this.querySelectorAll(`${btnlinkLevelSelector}:not([data-title="${parentTitle}"])`);
+            const resetNextLevelElementBtns = nextLevelLinkContainerSelector.querySelectorAll(`button:not([data-root-title="${parentTitle}"])`);
 
             if (hasChildLinks) {
                 this.changeChevronIconColor(element, '#fff');
                 this.showChildMenu(parentTitle, nextLevelLinkContainerSelector)
-            } else {
+            }
+            else {
                 this.hideElementsIfNoChildLinks(hideElementsIfNoChildLinks)
             }
 
             if (!(notSelectedBtnLinkElements instanceof NodeList) && !notSelectedBtnLinkElements.length) return;
-            this.removeHighlightsOfNotSelected(notSelectedBtnLinkElements, nextLevelLinkContainerSelector)
+            this.removeHighlightsOfNotSelected([...notSelectedBtnLinkElements, ...resetNextLevelElementBtns], nextLevelLinkContainerSelector)
         });
     }
 
@@ -125,14 +143,14 @@ class NavigationLargeScreen extends HTMLElement {
 
         const childLinkBtns = currentLinkContainer.querySelectorAll('[main-menu] > button');
         const nextElementSibling = currentLinkContainer.nextElementSibling
-        const customMenuContainer = currentLinkContainer.querySelectorAll(`ul[data-parent-title="${parentTitle}"]`);
+        const customMenuContainer = currentLinkContainer.querySelectorAll(`[custom-menu-container][data-parent-title="${parentTitle}"]`);
 
         this.manageClasses(currentLinkContainer, 'remove', 'hidden');
 
         if (customMenuContainer instanceof NodeList && customMenuContainer.length) {
             this.showOnlyCustomMenuForCurrentLinkContainer(customMenuContainer, currentLinkContainer)
         } else {
-            this.manageClasses(currentLinkContainer.querySelectorAll(`ul[custom-menu-container]`), 'add', 'hidden')
+            this.manageClasses(currentLinkContainer.querySelectorAll(`[custom-menu-container]`), 'add', 'hidden')
         }
 
         if (!(childLinkBtns instanceof NodeList) && !childLinkBtns.length) return;
@@ -166,8 +184,8 @@ class NavigationLargeScreen extends HTMLElement {
             this.changeChevronIconColor(element, '#000000')
         })
 
-        if (nextLevelLinkContainerSelector.dataset.linkLevelContainer) {
-            this.processHideOfElements(nextLevelLinkContainerSelector.nextElementSibling)
+        if (nextLevelLinkContainerSelector?.nextElementSibling?.classList.contains('link-container')) {
+            this.manageClasses(nextLevelLinkContainerSelector.nextElementSibling, 'add', 'hidden')
         }
     }
 

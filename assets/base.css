@@ -884,7 +884,7 @@ summary::-webkit-details-marker {
 }
 
 .hover-btn:hover {
-  background-color: rgba(229, 231, 235, 1);
+  background-color: #F3F4F5;
   border-radius: .25rem;
   color: black
 }

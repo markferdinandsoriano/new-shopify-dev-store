@@ -35,13 +35,13 @@
     class="hidden grid-cols-12 w-full h-[92%]"
   >
     <div
-      class="link-container col-span-3 bg-white py-2 px-6 overflow-y-auto h-full"
+      class="link-container col-span-3 bg-white overflow-y-auto h-full"
       data-link-level-container="[root-level-link-container]"
       data-btn-link-level=".root-level-link-btn"
       root-link-container
       current="true"
     >
-      <ul class="text-black text-xl text-center flex flex-col gap-y-2 w-full">
+      <ul class="text-black text-xl text-center flex flex-col py-2 px-6 gap-y-2 w-full">
         {% for root_link_value in root_links %}
           <button
             class="w-full flex flex-row items-center justify-between p-[8px] text-[#000000] h-[44px] hover-btn root-level-link-btn"
@@ -63,12 +63,12 @@
       {{ custom_menu_categories }}
     </div>
     <div
-      class="link-container col-span-3 bg-white py-2 px-6 hidden overflow-y-auto"
+      class="link-container col-span-3 bg-white hidden overflow-y-auto"
       data-link-level-container="[level-1-link-container]"
       data-btn-link-level=".level-1-link-btn"
       level-1-link-container
     >
-      <ul main-menu class="text-xl text-center flex flex-col gap-y-2 w-full">
+      <ul main-menu class="text-xl text-center flex flex-col py-2 px-6 gap-y-2 w-full">
         {{ link_headers }}
         {% for root_link_value in root_links %}
           {% for level_1_link in root_link_value.links %}
@@ -93,12 +93,12 @@
       {{ custom_menu_categories }}
     </div>
     <div
-      class="link-container col-span-3 bg-white py-2 px-6 hidden overflow-y-auto"
+      class="link-container col-span-3 bg-white hidden overflow-y-auto"
       data-link-level-container="[level-2-link-container]"
       data-btn-link-level=".level-2-link-btn"
       level-2-link-container
     >
-      <ul main-menu class="text-black text-xl text-center flex flex-col gap-y-2 w-full">
+      <ul main-menu class="text-black text-xl text-center flex flex-col py-2 px-6 gap-y-2 w-full">
         {{ link_headers }}
         {% for root_link_value in root_links %}
           {% for level_1_link in root_link_value.links %}
