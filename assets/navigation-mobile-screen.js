@@ -54,8 +54,8 @@ class NavigationMobileScreen extends HTMLElement {
         const parentLinkBtn = this.querySelectorAll('.parent-link-btn');
         const titleHeader = this.querySelector('.title-header');
         const backMenuBtn = this.querySelector('#back-menu-btn');
-        const childCustomMenu = this.querySelectorAll('[data-menu-title="child-menu"]');
-        const grandChildCustomMenu = this.querySelectorAll('[data-menu-title="grand-child-menu"]');
+        const childCustomMenu = this.querySelectorAll('[data-menu-title="level 1"]');
+        const grandChildCustomMenu = this.querySelectorAll('[data-menu-title="level 2"]');
 
         const customImages = this.querySelector('.custom-images');
 

@@ -1,0 +1,49 @@
+{% if link_level_container_selector == 'root-level' %}
+  <ul
+    custom-menu-container
+    data-link-level-container="[{{ link_level_container_selector }}-link-container]"
+    data-parent-title="{{ block.settings.parent_link }}"
+    class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full"
+  >
+    <hr>
+    <span class="p-[8px] h-[44px]">
+      <h1
+        class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
+      >
+        {{ block.settings.heading }}
+      </h1>
+    </span>
+  </ul>
+{% else %}
+  <ul
+    custom-menu-container
+    data-link-level-container="[{{ link_level_container_selector }}-link-container]"
+    data-parent-title="{{ block.settings.parent_link }}"
+    class="hidden cursor-pointer text-xl text-center flex flex-col gap-y-2 w-full level-1-link-btn"
+  >
+    <hr>
+    <span class="p-[8px] h-[44px] pointer-events-none">
+      <h1
+        class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
+      >
+        {{ block.settings.heading }}
+      </h1>
+    </span>
+    {% for custom_child_menu in block.settings.custom_menu.links %}
+      <button
+        class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn text-black level-1-link-btn"
+        data-title="{{ block.settings.parent_link }}"
+        data-child-title="{{ custom_child_menu.title }}"
+      >
+        <span class="text-[18px] font-normal pointer-events-none level-1-link-title">
+          {{ custom_child_menu.title }}
+        </span>
+        {% if custom_child_menu.links != blank and link_level_container_selector != 'level-2' %}
+          <span class="block w-[1.125rem] h-[1.125rem] pointer-events-none level-1-link-icon">
+            {% render 'chevron-right' %}
+          </span>
+        {% endif %}
+      </button>
+    {% endfor %}
+  </ul>
+{% endif %}

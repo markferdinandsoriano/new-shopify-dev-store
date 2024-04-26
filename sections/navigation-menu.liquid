@@ -2,77 +2,7 @@
 {% for block in section.blocks %}
   {% case block.type %}
     {% when 'heading' %}
-      {% if block.settings.menu_level == 'root-level' %}
-        <ul 
-          data-menu-title="{{ 'root-level' }}"
-          class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full">
-          <hr>
-          <span class="p-[8px] h-[44px]">
-            <h1
-              class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
-            >
-              {{ block.settings.heading }}
-            </h1>
-          </span>
-        </ul>
-        {% elsif block.settings.menu_level == 'level 1' %}
-        <ul 
-          data-menu-title="{{ 'level 1' }}"        
-          data-title="{{ block.settings.parent_link }}"
-          class="cursor-pointer text-xl text-center flex flex-col gap-y-2 w-full child-link-btn">
-          <hr>
-          <span class="p-[8px] h-[44px] pointer-events-none">
-            <h1
-              class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
-            >
-              {{ block.settings.heading }}
-            </h1>
-          </span>
-          {% for special_child_menu in block.settings.custom_menu.links %}
-            <button
-              class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn text-black child-link-btn"
-              data-title="{{ block.settings.parent_link }}"
-              data-child-title="{{ special_child_menu.title }}"
-            >
-              <span class="text-[18px] font-normal pointer-events-none child-link-title">
-                {{ special_child_menu.title }}
-              </span>
-              {% if special_child_menu.links != blank %}
-                <span class="block w-[1.125rem] h-[1.125rem] pointer-events-none parent-link-icon">
-                  {% render 'chevron-right' %}
-                </span>
-              {% endif %}
-            </button>
-          {% endfor %}
-        </ul>
-      {% elsif  block.settings.menu_level == 'level 2'%}
-      <ul    
-        data-menu-title="{{ 'grand-child-menu' }}"        
-        data-title="{{ block.settings.parent_link }}"
-        data-child-title="{{ block.settings.parent_link }}"
-        class="cursor-pointer text-black text-xl text-center flex flex-col gap-y-2 w-full grand-child-link-btn">
-        <hr>
-        <span class="p-[8px] h-[44px] pointer-events-none custom-grand-child-title">
-          <h1
-            class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
-          >
-            {{ block.settings.heading }}
-          </h1>
-        </span>
-        {% for special_grand_child_menu in block.settings.custom_menu.links %}
-          <button
-            class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn grand-child-link-btn"
-            data-title="{{ block.settings.parent_link }}"
-            data-child-title="{{ block.settings.parent_link }}"
-            data-grand-child-title="{{ special_grand_child_menu.title }}"
-          >
-            <span class="text-[18px] font-normal pointer-events-none child-link-title">
-              {{ special_grand_child_menu.title }}
-            </span>
-          </button>
-        {% endfor %}
-      </ul>
-      {% endif %}
+      {% render 'custom-menu-blocks',block: block,link_level_container_selector:block.settings.menu_level %}
   {% endcase %}
 {% endfor %}
 {% endcapture %}
@@ -175,15 +105,15 @@
           "label": "Select Link Level",
           "options": [
             {
-              "value": "root level",
+              "value": "root-level",
               "label": "Root level"
             },
             {
-              "value": "level 1",
+              "value": "level-1",
               "label": "Level 1"
             },
             {
-              "value": "level 2",
+              "value": "level-2",
               "label": "Level 2"
             }
           ]

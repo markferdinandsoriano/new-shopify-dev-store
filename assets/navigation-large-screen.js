@@ -1,183 +1,263 @@
-
 class NavigationLargeScreen extends HTMLElement {
     constructor() {
         super();
         this.navIcon = this.querySelector("#nav-icon");
+        this.rootLinkBtnSelector = '.root-level-link-btn';
+        this.level1LinkBtnSelector = '.level-1-link-btn';
+        this.level2LinkBtnSelector = '.level-2-link-btn';
+        this.rootLinkContainerSelector = '[root-level-link-container]';
+        this.level1LinkContainerSelector = '[level-1-link-container]';
+        this.level2LinkContainerSelector = '[level-2-link-container]';
+        this.customImageContainerSelector = '[custom-image-container]';
 
+        this.Links = []
     }
 
     connectedCallback() {
-        this.toggleNavContentsDesktop()
-        this.focusOnNavLinks()
+        this.toggleRootMenuContainer()
+        this.showRootMenu()
     }
 
-    toggleNavContentsDesktop() {
-        this.navIcon.addEventListener('click', (e) => {
-            const hamburgerIcon = this.querySelector('.hamburger-icon');
-            const exitIcon = this.querySelector('.exit-icon');
-            const childLinksElement = this.querySelector('[child-link-container]');
-            const grandChildLinksElement = this.querySelector('[grand-child-link-container]');
-            const customImageContainer = this.querySelector('[custom-image-container]');
-            const parentLinkBtn = this.querySelectorAll('.parent-link-btn');
-
+    toggleRootMenuContainer() {
+        this.navIcon.addEventListener('click', () => {
+            const rootLevelLinkBtns = this.querySelectorAll(this.rootLinkBtnSelector);
             const navContentsDesktop = this.querySelector('#nav-contents-desktop');
-            navContentsDesktop.classList.toggle('hidden')
-            navContentsDesktop.classList.toggle('display-grid')
+            this.manageClasses(navContentsDesktop, ['toggle', 'toggle'], ['hidden', 'display-grid'])
 
             if (navContentsDesktop.classList.contains('hidden')) {
-                hamburgerIcon.classList.remove('hidden');
-                exitIcon.classList.add('hidden');
-                customImageContainer.classList.add('hidden');
-                customImageContainer.classList.remove('display-grid');
-                childLinksElement.classList.add('hidden');
-                grandChildLinksElement.classList.add('hidden');
-                parentLinkBtn.forEach((parentLinkBtnElement) => {
-                    parentLinkBtnElement.classList.remove('focus-btn');
-                    parentLinkBtnElement.classList.add('hover-btn');
-                    const _chevronRightIcon = parentLinkBtnElement.querySelector('.chevron-right-icon > path');
+                this.resetClassOfElements()
 
-                    if (!_chevronRightIcon) return;
-                    _chevronRightIcon.setAttribute('fill', '#000000')
+                rootLevelLinkBtns.forEach((rootLinkBtnElement) => {
+                    this.manageClasses(rootLinkBtnElement, ['remove', 'add'], ['focus-btn', 'hover-btn'])
+                    this.changeChevronIconColor(rootLinkBtnElement, '#000000')
                 })
             } else {
-                hamburgerIcon.classList.add('hidden');
-                exitIcon.classList.remove('hidden');
+                this.manageClasses(this.querySelector('.hamburger-icon'), 'add', 'hidden')
+                this.manageClasses(this.querySelector('.exit-icon'), 'remove', 'hidden');
             }
         });
     }
 
-    focusOnNavLinks() {
-        const parentLinkBtn = this.querySelectorAll('.parent-link-btn');
+    showRootMenu() {
+        const linkContainers = this.querySelectorAll('#nav-contents-desktop > div.link-container');
+        if (!(linkContainers instanceof NodeList) && !linkContainers.length) return;
 
+        linkContainers.forEach((element) => {
+            const nextSiblingElement = element.nextElementSibling.classList.contains('link-container') ? element.nextElementSibling : null;
+            this.Links.push({
+                parentLinkElement: element,
+                childLinkELement: nextSiblingElement
+            })
+        })
 
-        parentLinkBtn.forEach((parentLinkBtnElement, index) => {
-            parentLinkBtnElement.addEventListener('click', (e) => {
-                e.preventDefault();
-                const parentLinkBtnIndex = parseInt(e.target.getAttribute('data-index'));
-                const parentLinkTitle = e.target.getAttribute('data-title');
-                const chevronRightIcon = e.target.querySelector('.chevron-right-icon > path');
-                const childMainHeader = this.querySelector('.child-main-header');
-                const childSecondaryHeader = this.querySelector('.child-secondary-header');
-                const customImageContainer = this.querySelector('[custom-image-container]');
+        this.Links.forEach(({ parentLinkElement, childLinkELement }) => {
+            const parentLinkBtnSelector = parentLinkElement.dataset.btnLinkLevel;
+            const parentLinkBtns = parentLinkElement.querySelectorAll(parentLinkBtnSelector);
 
-                childMainHeader.textContent = parentLinkTitle;
-                childSecondaryHeader.textContent = `See All ${parentLinkTitle}`
+            if (!childLinkELement) return;
 
-                parentLinkBtnElement.classList.add('focus-btn');
-                parentLinkBtnElement.classList.remove('hover-btn');
-
-                if (chevronRightIcon) {
-                    chevronRightIcon.setAttribute('fill', '#fff')
-                    this.toggleShowChildLink(parentLinkTitle);
-                } else {
-                    const childLinksElement = this.querySelector('[child-link-container]');
-                    const grandChildLinksElement = this.querySelector('[grand-child-link-container]');
-                    childLinksElement.classList.add('hidden');
-                    grandChildLinksElement.classList.add('hidden');
-                    customImageContainer.classList.add('hidden');
-                    customImageContainer.classList.remove('display-grid');
+            this.showCurrentMenu(parentLinkBtns, [
+                {
+                    element: childLinkELement,
+                    method: 'add',
+                    classNames: 'hidden'
+                },
+                {
+                    element: this.querySelector(this.customImageContainerSelector),
+                    method: ['add', 'remove'],
+                    classNames: ['hidden', 'display-grid']
                 }
-
-                parentLinkBtn.forEach((parentLinkNotFocusBtn, _parentLinkBtnIndex = index) => {
-                    const _chevronRightIcon = parentLinkNotFocusBtn.querySelector('.chevron-right-icon > path');
-                    const grandChildContainer = this.querySelector('[grand-child-link-container]');
-                    if (parentLinkBtnIndex !== _parentLinkBtnIndex) {
-                        parentLinkNotFocusBtn.classList.remove('focus-btn');
-                        parentLinkNotFocusBtn.classList.add('hover-btn');
-                        grandChildContainer.classList.add('hidden');
-
-                        if (_chevronRightIcon) {
-                            _chevronRightIcon.setAttribute('fill', '#000000')
-                        }
-                    }
-                })
-
-            });
+            ], childLinkELement)
 
         })
     }
 
-    toggleShowChildLink(parentLinkTitle) {
-        const childLinksElement = this.querySelector('[child-link-container]');
-        const childLinkBtnElements = this.querySelectorAll('.child-link-btn');
-        const customImageContainer = this.querySelector('[custom-image-container]');
+    showCurrentMenu(currentLinkBtns, hideElementsIfNoChildLinks, nextLevelLinkContainerSelector, hasParentTitle) {
+        currentLinkBtns.forEach((element) => {
 
-        customImageContainer.classList.remove('hidden');
-        customImageContainer.classList.add('display-grid');
-        childLinksElement.classList.remove('hidden');
+            if ('undefined' === typeof hasParentTitle) {
+                this.processingOfMenu(element, hideElementsIfNoChildLinks, nextLevelLinkContainerSelector);
+                return;
+            }
 
-        childLinkBtnElements.forEach((childLinkEachElement) => {
-            if (childLinkEachElement.getAttribute('data-title') === parentLinkTitle) {
-                childLinkEachElement.classList.remove('hidden');
-                childLinkEachElement.addEventListener('click', (e) => {
-                    e.preventDefault();
-
-                    const { childTitle } = e.target.dataset
-
-                    childLinkEachElement.classList.add('focus-btn');
-                    childLinkEachElement.classList.remove('hover-btn');
-
-                    const chevronRightIcon = e.target.querySelector('.chevron-right-icon > path');
-
-                    const grandChildMainHeader = this.querySelector('.grand-child-main-header');
-                    const grandChildSecondaryHeader = this.querySelector('.grand-child-secondary-header');
-
-                    grandChildMainHeader.textContent = childTitle;
-                    grandChildSecondaryHeader.textContent = `See All ${childTitle}`
-
-                    if (chevronRightIcon) {
-                        chevronRightIcon.setAttribute('fill', '#fff')
-                        this.toggleShowGrandChildLink(childTitle);
-                    } else {
-                        const grandChildLinksElement = this.querySelector('[grand-child-link-container]');
-                        grandChildLinksElement.classList.add('hidden');
-                    }
-
-
-                    childLinkBtnElements.forEach((childLinkNotFocusBtn) => {
-                        const _childTitle = childLinkNotFocusBtn.dataset.childTitle
-                        const _chevronRightIcon = childLinkNotFocusBtn.querySelector('.chevron-right-icon > path');
-
-                        if (childTitle !== _childTitle) {
-                            childLinkNotFocusBtn.classList.remove('focus-btn')
-                            childLinkNotFocusBtn.classList.add('hover-btn')
-                            if (_chevronRightIcon) {
-                                _chevronRightIcon.setAttribute('fill', '#000000')
-                            }
-                        }
-
-                    })
-                })
+            if (hasParentTitle && element.dataset.rootTitle === hasParentTitle) {
+                element.classList.remove('hidden');
+                this.processingOfMenu(element, hideElementsIfNoChildLinks, nextLevelLinkContainerSelector, 'data-title')
             } else {
-                childLinkEachElement.classList.add('hidden');
+                element.classList.add('hidden');
             }
         })
     }
 
-    toggleShowGrandChildLink(childLinkTitle) {
-        const grandChildLinksElement = this.querySelector('[grand-child-link-container]');
-        const customImageContainer = this.querySelector('[custom-image-container]');
+    processingOfMenu(element, hideElementsIfNoChildLinks, nextLevelLinkContainerSelector, parentTitleSelector) {
+        element.addEventListener('click', (e) => {
+            e.preventDefault();
 
-        const grandChildLinkBtnElements = this.querySelectorAll('.grand-child-link-btn');
-        grandChildLinksElement.classList.remove('hidden');
-        customImageContainer.classList.add('display-grid');
-        customImageContainer.classList.remove('hidden');
+            const parentTitleDefaultIfNoSelector = parentTitleSelector ?? 'data-root-title';
+            const parentTitle = e.target.getAttribute(parentTitleDefaultIfNoSelector);
+            const hasChildLinks = element.querySelector('.chevron-right-icon > path');
+            const btnlinkLevelSelector = e.target.getAttribute('data-btn-level');
 
-        grandChildLinkBtnElements.forEach((grandChildLinkEachElement) => {
-            if (grandChildLinkEachElement.getAttribute('data-child-title') === childLinkTitle) {
-                grandChildLinkEachElement.classList.remove('hidden');
-                grandChildLinkEachElement.addEventListener('click', (e) => {
-                    e.preventDefault();
-                })
+            this.manageClasses(element, ['add', 'remove'], ['focus-btn', 'hover-btn'])
 
+            const nextMenuHeaderTitle = nextLevelLinkContainerSelector.querySelector('.link-headers .link-title');
+            const nextMenuSecondaryTitle = nextLevelLinkContainerSelector.querySelector('.link-headers .link-secondary-title');
+
+            nextMenuHeaderTitle.textContent = parentTitle;
+            nextMenuSecondaryTitle.textContent = `See All ${parentTitle}`
+
+            const notSelectedBtnLinkElements = this.querySelectorAll(`${btnlinkLevelSelector}:not([data-title="${parentTitle}"])`);
+
+            if (hasChildLinks) {
+                this.changeChevronIconColor(element, '#fff');
+                this.showChildMenu(parentTitle, nextLevelLinkContainerSelector)
             } else {
-                grandChildLinkEachElement.classList.add('hidden');
+                this.hideElementsIfNoChildLinks(hideElementsIfNoChildLinks)
             }
-        })
 
+            if (!(notSelectedBtnLinkElements instanceof NodeList) && !notSelectedBtnLinkElements.length) return;
+            this.removeHighlightsOfNotSelected(notSelectedBtnLinkElements, nextLevelLinkContainerSelector)
+        });
     }
 
+    showChildMenu(parentTitle, currentLinkContainer) {
+        if (!currentLinkContainer) return;
 
+        const childLinkBtns = currentLinkContainer.querySelectorAll('[main-menu] > button');
+        const nextElementSibling = currentLinkContainer.nextElementSibling
+        const customMenuContainer = currentLinkContainer.querySelectorAll(`ul[data-parent-title="${parentTitle}"]`);
+
+        this.manageClasses(currentLinkContainer, 'remove', 'hidden');
+
+        if (customMenuContainer instanceof NodeList && customMenuContainer.length) {
+            this.showOnlyCustomMenuForCurrentLinkContainer(customMenuContainer, currentLinkContainer)
+        } else {
+            this.manageClasses(currentLinkContainer.querySelectorAll(`ul[custom-menu-container]`), 'add', 'hidden')
+        }
+
+        if (!(childLinkBtns instanceof NodeList) && !childLinkBtns.length) return;
+
+        this.showCurrentMenu(childLinkBtns, [
+            {
+                element: nextElementSibling,
+                method: 'add',
+                classNames: 'hidden'
+            }
+        ], nextElementSibling, parentTitle)
+    }
+
+    showOnlyCustomMenuForCurrentLinkContainer(customMenuContainer, currentLinkContainer) {
+        const currentLinkContainerLevel = currentLinkContainer.dataset.linkLevelContainer;
+
+        customMenuContainer.forEach((element) => {
+            if (currentLinkContainerLevel === element.dataset.linkLevelContainer) {
+                element.classList.remove('hidden');
+            } else {
+                element.classList.add('hidden');
+            }
+        })
+    }
+
+    removeHighlightsOfNotSelected(currentElements, nextLevelLinkContainerSelector) {
+        if (!(currentElements instanceof NodeList) && !currentElements.length) return;
+
+        currentElements.forEach((element) => {
+            this.manageClasses(element, ['remove', 'add'], ['focus-btn', 'hover-btn'])
+            this.changeChevronIconColor(element, '#000000')
+        })
+
+        if (nextLevelLinkContainerSelector.dataset.linkLevelContainer) {
+            this.processHideOfElements(nextLevelLinkContainerSelector.nextElementSibling)
+        }
+    }
+
+    hideElementsIfNoChildLinks(elementsToHide) {
+        this.processHideOfElements(elementsToHide)
+    }
+
+    processHideOfElements(elementsToHide) {
+        if (elementsToHide.length && elementsToHide) {
+            elementsToHide.forEach(({ element, method, classNames }) => {
+                this.manageClasses(element, method, classNames)
+            })
+        }
+    }
+
+    resetClassOfElements() {
+        const elementsToReset = [
+            {
+                element: this.querySelector('.hamburger-icon'),
+                method: 'remove',
+                classNames: 'hidden'
+            },
+            {
+                element: this.querySelector('.exit-icon'),
+                method: 'add',
+                classNames: 'hidden'
+            },
+            {
+                element: this.querySelector(this.customImageContainerSelector),
+                method: ['add', 'remove'],
+                classNames: ['hidden', 'display-grid']
+            }, {
+                element: this.querySelector(this.level1LinkContainerSelector),
+                method: 'add',
+                classNames: 'hidden'
+            }, {
+                element: this.querySelector(this.level2LinkContainerSelector),
+                method: 'add',
+                classNames: 'hidden'
+            }
+        ]
+
+        elementsToReset.forEach(({ element, method, classNames }) => {
+            this.manageClasses(element, method, classNames)
+        })
+    }
+
+    changeChevronIconColor(currentElement, color) {
+        const chevronRightIcon = currentElement?.querySelector('.chevron-right-icon > path');
+
+        if (chevronRightIcon) {
+            chevronRightIcon.setAttribute('fill', color)
+        }
+    }
+
+    manageClasses(elements, method, classNames) {
+        if (!elements && !method && !classNames) return;
+
+        if (elements instanceof NodeList && elements.length && !Array.isArray(method) && method.length && !Array.isArray(classNames) && classNames.length) {
+            elements.forEach((element) => {
+                element.classList[method](classNames);
+            })
+            return;
+        }
+
+        if (!(elements instanceof NodeList) && Array.isArray(method) && method.length && Array.isArray(classNames) && classNames.length) {
+            method.forEach((methodValue, index) => {
+                elements.classList[methodValue](classNames[index]);
+            })
+            return;
+        }
+
+        if (elements instanceof NodeList && elements.length && Array.isArray(method) && method.length && Array.isArray(classNames) && classNames.length) {
+            elements.forEach((element) => {
+                method.forEach((methodElement, index) => {
+                    element.classList[methodElement](classNames[index]);
+                })
+            })
+
+            return;
+        }
+
+        elements.classList[method](classNames);
+    }
+
+    removeSpecificElement(elements) {
+        if (elements instanceof NodeList && elements.length && elements !== null) {
+            elements.forEach(element => element.remove())
+        }
+    }
 }
 
 if (!customElements.get('navigation-large-screen')) {
