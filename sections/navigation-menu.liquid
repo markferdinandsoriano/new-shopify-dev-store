@@ -1,14 +1,18 @@
+{% liquid
+  assign menu_link_lists = linklists['main-menu'].links
+%}
+
 {% capture custom_menu_categories %}
 {% for block in section.blocks %}
   {% case block.type %}
     {% when 'heading' %}
-      {% render 'custom-menu-blocks',block: block,link_level_container_selector:block.settings.menu_level %}
+      {% render 'navigation-custom-menu-blocks',block: block,link_level_container_selector:block.settings.menu_level %}
   {% endcase %}
 {% endfor %}
 {% endcapture %}
 
 {% capture custom_images %}
-<ul class="custom-images gap-y-6 py-8 px-6">
+<ul custom-images class="custom-images gap-y-6 py-8 px-6">
   <div class="w-full h-[30%]">
     <img
       src="{{ 'mcafee.png' | asset_url }}"
@@ -71,12 +75,14 @@
 <div class="w-full h-auto">
   {% render 'navigation-menu-large-screen',
     custom_menu_categories: custom_menu_categories,
-    custom_images: custom_images
+    custom_images: custom_images,
+    menu_link_lists: menu_link_lists
   %}
 
   {% render 'navigation-menu-mobile-screen',
     custom_menu_categories: custom_menu_categories,
-    custom_images: custom_images
+    custom_images: custom_images,
+    menu_link_lists: menu_link_lists
   %}
 </div>
 
@@ -122,6 +128,17 @@
           "type": "link_list",
           "id": "custom_menu",
           "label": "Special Categories menu"
+        }
+      ]
+    },
+    {
+      "type": "Image",
+      "name": "Custom menu",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Menu Image"
         }
       ]
     }

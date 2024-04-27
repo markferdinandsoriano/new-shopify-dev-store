@@ -1,7 +1,3 @@
-{% liquid
-  assign root_links = linklists['main-menu'].links
-%}
-
 {% capture link_headers %}
 <div class="link-headers flex flex-col gap-y-2 w-full">
   <span class="p-[8px] h-[44px]">
@@ -14,6 +10,10 @@
   </span>
 </div>
 {% endcapture %}
+
+{% liquid
+  assign menu_levels = 'root-level-link,level-1-link,level-2-link,custom_images_container' | split: ','
+%}
 
 <navigation-large-screen class="fixed hidden show-large-screen flex-col h-full w-full">
   <div class="flex flex-row items-start mt-[1rem] w-[124px] h-[8%]">
@@ -34,97 +34,77 @@
     id="nav-contents-desktop"
     class="hidden grid-cols-12 w-full h-[92%]"
   >
-    <div
-      class="link-container col-span-3 bg-white overflow-y-auto h-full"
-      data-link-level-container="[root-level-link-container]"
-      data-btn-link-level=".root-level-link-btn"
-      root-link-container
-      current="true"
-    >
-      <ul class="text-black text-xl text-center flex flex-col py-2 px-6 gap-y-2 w-full">
-        {% for root_link_value in root_links %}
-          <button
-            class="w-full flex flex-row items-center justify-between p-[8px] text-[#000000] h-[44px] hover-btn root-level-link-btn"
-            data-root-title="{{ root_link_value.title }}"
-            data-title="{{ root_link_value.title }}"
-            data-btn-level="{{ ".root-level-link-btn" }}"
-          >
-            <span class="text-[18px] font-normal pointer-events-none">
-              {{ root_link_value.title }}
-            </span>
-            {% if root_link_value.links != blank %}
-              <span class="block w-[1.125rem] h-[1.125rem] pointer-events-none">
-                {% render 'chevron-right', color: '#000000' %}
-              </span>
-            {% endif %}
-          </button>
-        {% endfor %}
-      </ul>
-      {{ custom_menu_categories }}
-    </div>
-    <div
-      class="link-container col-span-3 bg-white hidden overflow-y-auto"
-      data-link-level-container="[level-1-link-container]"
-      data-btn-link-level=".level-1-link-btn"
-      level-1-link-container
-    >
-      <ul main-menu class="text-xl text-center flex flex-col py-2 px-6 gap-y-2 w-full">
-        {{ link_headers }}
-        {% for root_link_value in root_links %}
-          {% for level_1_link in root_link_value.links %}
-            <button
-              class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn text-black level-1-link-btn"
-              data-root-title="{{ root_link_value.title }}"
-              data-title="{{ level_1_link.title }}"
-              data-btn-level="{{ ".level-1-link-btn"}}"
-            >
-              <span class="text-[18px] font-normal pointer-events-none">
-                {{ level_1_link.title }}
-              </span>
-              {% if level_1_link.links != blank %}
-                <span class="block w-[1.125rem] h-[1.125rem] pointer-events-none">
-                  {% render 'chevron-right' %}
-                </span>
-              {% endif %}
-            </button>
-          {% endfor %}
-        {% endfor %}
-      </ul>
-      {{ custom_menu_categories }}
-    </div>
-    <div
-      class="link-container col-span-3 bg-white hidden overflow-y-auto"
-      data-link-level-container="[level-2-link-container]"
-      data-btn-link-level=".level-2-link-btn"
-      level-2-link-container
-    >
-      <ul main-menu class="text-black text-xl text-center flex flex-col py-2 px-6 gap-y-2 w-full">
-        {{ link_headers }}
-        {% for root_link_value in root_links %}
-          {% for level_1_link in root_link_value.links %}
-            {% for level_2_link in level_1_link.links %}
-              <button
-                class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn level-2-link-btn"
-                data-root-title="{{ level_1_link.title }}"
-                data-title="{{ level_2_link.title }}"
-                data-btn-level="{{ ".level-2-link-btn"}}"
-              >
-                <span class="text-[18px] font-normal pointer-events-none">
-                  {{ level_2_link.title }}
-                </span>
-              </button>
-            {% endfor %}
-          {% endfor %}
-        {% endfor %}
-      </ul>
-      {{ custom_menu_categories }}
-    </div>
-    <div
-      class="col-span-3 bg-white hidden overflow-y-auto "
-      custom-image-container
-    >
-      {{ custom_images }}
-    </div>
+    {% for link_level in menu_levels %}
+      {% if link_level != 'custom_images_container' %}
+        <navigation-menu-component
+          class="link-container col-span-3 bg-white overflow-y-auto h-full"
+          data-link-level-container="{{ link_level }}-container"
+          data-btn-link-level=".{{ link_level }}-btn"
+          data-custom-menu-attribute="{{ 'custom-menu-container' }}"
+          data-link-container-selector="link-container"
+        >
+          {% assign link_btn_value = link_level | prepend: '.' | append: '-btn' %}
+          {% if link_level == 'root-level-link' %}
+            {% render 'navigation-link-container', btn_level: link_btn_value, menu_link_lists: menu_link_lists %}
+          {% else %}
+            {% render 'navigation-link-container',
+              btn_level: link_btn_value,
+              menu_link_lists: menu_link_lists,
+              link_headers: link_headers
+            %}
+          {% endif %}
+
+          {{ custom_menu_categories }}
+        </navigation-menu-component>
+      {% else %}
+        {{ custom_images }}
+      {% endif %}
+    {% endfor %}
+    {% comment %}
+      <div
+        class="link-container col-span-3 bg-white overflow-y-auto h-full"
+        data-link-level-container="root-level-link-container"
+        data-btn-link-level=".root-level-link-btn"
+        root-link-container
+      >
+        {% render 'navigation-link-container', btn_level: '.root-level-link-btn', root_links: root_links %}
+        {{ custom_menu_categories }}
+      </div>
+    {% endcomment %}
+    {% comment %}
+      <div
+        class="link-container col-span-3 bg-white hidden overflow-y-auto"
+        data-link-level-container="[level-1-link-container]"
+        data-btn-link-level=".level-1-link-btn"
+        level-1-link-container
+      >
+        {% render 'navigation-link-container',
+          btn_level: '.level-1-link-btn',
+          root_links: root_links,
+          link_headers: link_headers
+        %}
+        {{ custom_menu_categories }}
+      </div>
+      <div
+        class="link-container col-span-3 bg-white hidden overflow-y-auto"
+        data-link-level-container="[level-2-link-container]"
+        data-btn-link-level=".level-2-link-btn"
+        level-2-link-container
+      >
+        {% render 'navigation-link-container',
+          btn_level: '.level-2-link-btn',
+          root_links: root_links,
+          link_headers: link_headers
+        %}
+        {{ custom_menu_categories }}
+      </div>
+      <div
+        class="col-span-3 bg-white hidden overflow-y-auto "
+        custom-image-container
+      >
+        {{ custom_images }}
+      </div>
+    {% endcomment %}
   </div>
 </navigation-large-screen>
 
@@ -132,4 +112,10 @@
   type="module"
   defer="defer"
   src="{{ 'navigation-large-screen.js' | asset_url }}"
+></script>
+
+<script
+  type="module"
+  defer="defer"
+  src="{{ 'navigation-menu-component.js' | asset_url }}"
 ></script>

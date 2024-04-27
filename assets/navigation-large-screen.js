@@ -1,27 +1,28 @@
 class NavigationLargeScreen extends HTMLElement {
     constructor() {
         super();
-        this.navIcon = this.querySelector("#nav-icon");
+        this.navIconSelector = "#nav-icon";
+        this.navContentsSelector = '#nav-contents-desktop';
         this.rootLinkBtnSelector = '.root-level-link-btn';
-        this.level1LinkBtnSelector = '.level-1-link-btn';
-        this.level2LinkBtnSelector = '.level-2-link-btn';
-        this.rootLinkContainerSelector = '[root-level-link-container]';
-        this.level1LinkContainerSelector = '[level-1-link-container]';
-        this.level2LinkContainerSelector = '[level-2-link-container]';
-        this.customImageContainerSelector = '[custom-image-container]';
-
-        this.Links = []
+        this.rootLinkContainerSelector = 'root-level-link-container';
+        this.customImageContainerSelector = '[custom-images]';
+        this.linkContainerSelector = '.link-container';
+        this.hamburgerIconSelector = '.hamburger-icon';
+        this.exitIconSelector = '.exit-icon';
     }
 
     connectedCallback() {
-        this.toggleRootMenuContainer()
+        this.toggleOpenRootMenuContainer()
         this.showRootMenu()
     }
 
-    toggleRootMenuContainer() {
-        this.navIcon.addEventListener('click', () => {
+    toggleOpenRootMenuContainer() {
+        const navIcon = this.querySelector(this.navIconSelector);
+        if (!navIcon) return;
+
+        navIcon.addEventListener('click', () => {
             const rootLevelLinkBtns = this.querySelectorAll(this.rootLinkBtnSelector);
-            const navContentsDesktop = this.querySelector('#nav-contents-desktop');
+            const navContentsDesktop = this.querySelector(this.navContentsSelector);
             this.manageClasses(navContentsDesktop, ['toggle', 'toggle'], ['hidden', 'display-grid'])
 
             if (navContentsDesktop.classList.contains('hidden')) {
@@ -32,146 +33,20 @@ class NavigationLargeScreen extends HTMLElement {
                     this.changeChevronIconColor(rootLinkBtnElement, '#000000')
                 })
             } else {
-                this.manageClasses(this.querySelector('.hamburger-icon'), 'add', 'hidden')
-                this.manageClasses(this.querySelector('.exit-icon'), 'remove', 'hidden');
+                this.manageClasses(this.querySelector(this.hamburgerIconSelector), 'add', 'hidden')
+                this.manageClasses(this.querySelector(this.exitIconSelector), 'remove', 'hidden');
             }
         });
     }
 
     showRootMenu() {
-        const linkContainers = this.querySelectorAll('#nav-contents-desktop > div.link-container');
+        const linkContainers = this.querySelectorAll(`${this.navContentsSelector} > ${this.linkContainerSelector}`);
         if (!(linkContainers instanceof NodeList) && !linkContainers.length) return;
 
         linkContainers.forEach((element) => {
-            const nextSiblingElement = element.nextElementSibling.classList.contains('link-container') ? element.nextElementSibling : null;
-            this.Links.push({
-                parentLinkElement: element,
-                childLinkELement: nextSiblingElement
-            })
-        })
-
-        this.Links.forEach(({ parentLinkElement, childLinkELement }) => {
-            const parentLinkBtnSelector = parentLinkElement.dataset.btnLinkLevel;
-            const parentLinkBtns = parentLinkElement.querySelectorAll(parentLinkBtnSelector);
-
-            if (!childLinkELement) return;
-
-            const isGrandChildLinkElementExist = childLinkELement.nextElementSibling.classList.contains('link-container');
-
-            let elementsToHide = [
-                {
-                    element: childLinkELement,
-                    method: 'add',
-                    classNames: 'hidden'
-                },
-                {
-                    element: this.querySelector(this.customImageContainerSelector),
-                    method: ['add', 'remove'],
-                    classNames: ['hidden', 'display-grid']
-                }
-            ]
-
-            if (isGrandChildLinkElementExist) {
-                const shallowCopyElementstoHide = [...elementsToHide, {
-                    element: childLinkELement.nextElementSibling,
-                    method: 'add',
-                    classNames: 'hidden'
-                }]
-
-                elementsToHide = shallowCopyElementstoHide
-            }
-
-            this.showCurrentMenu(parentLinkBtns, elementsToHide, childLinkELement)
-
-        })
-    }
-
-    showCurrentMenu(currentLinkBtns, hideElementsIfNoChildLinks, nextLevelLinkContainerSelector, hasParentTitle) {
-        currentLinkBtns.forEach((element) => {
-
-            if ('undefined' === typeof hasParentTitle) {
-                this.processingOfMenu(element, hideElementsIfNoChildLinks, nextLevelLinkContainerSelector);
-                return;
-            }
-
-            if (hasParentTitle && element.dataset.rootTitle === hasParentTitle) {
-                element.classList.remove('hidden');
-                this.processingOfMenu(element, hideElementsIfNoChildLinks, nextLevelLinkContainerSelector, 'data-title')
-            } else {
-                element.classList.add('hidden');
-            }
-        })
-    }
-
-    processingOfMenu(element, hideElementsIfNoChildLinks, nextLevelLinkContainerSelector, parentTitleSelector) {
-        element.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            const parentTitleDefaultIfNoSelector = parentTitleSelector ?? 'data-root-title';
-            const parentTitle = e.target.getAttribute(parentTitleDefaultIfNoSelector);
-            const hasChildLinks = element.querySelector('.chevron-right-icon > path');
-            const btnlinkLevelSelector = e.target.getAttribute('data-btn-level');
-
-            this.manageClasses(element, ['add', 'remove'], ['focus-btn', 'hover-btn'])
-
-            const nextMenuHeaderTitle = nextLevelLinkContainerSelector.querySelector('.link-headers .link-title');
-            const nextMenuSecondaryTitle = nextLevelLinkContainerSelector.querySelector('.link-headers .link-secondary-title');
-
-            if (nextMenuHeaderTitle && nextMenuSecondaryTitle) {
-                nextMenuHeaderTitle.textContent = parentTitle;
-                nextMenuSecondaryTitle.textContent = `See All ${parentTitle}`
-            }
-
-            const notSelectedBtnLinkElements = this.querySelectorAll(`${btnlinkLevelSelector}:not([data-title="${parentTitle}"])`);
-            const resetNextLevelElementBtns = nextLevelLinkContainerSelector.querySelectorAll(`button:not([data-root-title="${parentTitle}"])`);
-
-            if (hasChildLinks) {
-                this.changeChevronIconColor(element, '#fff');
-                this.showChildMenu(parentTitle, nextLevelLinkContainerSelector)
-            }
-            else {
-                this.hideElementsIfNoChildLinks(hideElementsIfNoChildLinks)
-            }
-
-            if (!(notSelectedBtnLinkElements instanceof NodeList) && !notSelectedBtnLinkElements.length) return;
-            this.removeHighlightsOfNotSelected([...notSelectedBtnLinkElements, ...resetNextLevelElementBtns], nextLevelLinkContainerSelector)
-        });
-    }
-
-    showChildMenu(parentTitle, currentLinkContainer) {
-        if (!currentLinkContainer) return;
-
-        const childLinkBtns = currentLinkContainer.querySelectorAll('[main-menu] > button');
-        const nextElementSibling = currentLinkContainer.nextElementSibling
-        const customMenuContainer = currentLinkContainer.querySelectorAll(`[custom-menu-container][data-parent-title="${parentTitle}"]`);
-
-        this.manageClasses(currentLinkContainer, 'remove', 'hidden');
-
-        if (customMenuContainer instanceof NodeList && customMenuContainer.length) {
-            this.showOnlyCustomMenuForCurrentLinkContainer(customMenuContainer, currentLinkContainer)
-        } else {
-            this.manageClasses(currentLinkContainer.querySelectorAll(`[custom-menu-container]`), 'add', 'hidden')
-        }
-
-        if (!(childLinkBtns instanceof NodeList) && !childLinkBtns.length) return;
-
-        this.showCurrentMenu(childLinkBtns, [
-            {
-                element: nextElementSibling,
-                method: 'add',
-                classNames: 'hidden'
-            }
-        ], nextElementSibling, parentTitle)
-    }
-
-    showOnlyCustomMenuForCurrentLinkContainer(customMenuContainer, currentLinkContainer) {
-        const currentLinkContainerLevel = currentLinkContainer.dataset.linkLevelContainer;
-
-        customMenuContainer.forEach((element) => {
-            if (currentLinkContainerLevel === element.dataset.linkLevelContainer) {
-                element.classList.remove('hidden');
-            } else {
-                element.classList.add('hidden');
+            if (this.rootLinkContainerSelector !== element.dataset.linkLevelContainer) {
+                this.manageClasses(element, 'add', 'hidden')
+                this.manageClasses(this.querySelector(this.customImageContainerSelector), ['add', 'remove'], ['hidden', 'display-grid'])
             }
         })
     }
@@ -189,27 +64,15 @@ class NavigationLargeScreen extends HTMLElement {
         }
     }
 
-    hideElementsIfNoChildLinks(elementsToHide) {
-        this.processHideOfElements(elementsToHide)
-    }
-
-    processHideOfElements(elementsToHide) {
-        if (elementsToHide.length && elementsToHide) {
-            elementsToHide.forEach(({ element, method, classNames }) => {
-                this.manageClasses(element, method, classNames)
-            })
-        }
-    }
-
     resetClassOfElements() {
         const elementsToReset = [
             {
-                element: this.querySelector('.hamburger-icon'),
+                element: this.querySelector(this.hamburgerIconSelector),
                 method: 'remove',
                 classNames: 'hidden'
             },
             {
-                element: this.querySelector('.exit-icon'),
+                element: this.querySelector(this.exitIconSelector),
                 method: 'add',
                 classNames: 'hidden'
             },

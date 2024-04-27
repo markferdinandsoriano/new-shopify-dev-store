@@ -1,0 +1,30 @@
+{% capture link_conditions %}
+  {% if btn_level == ".root-level-link-btn" %}
+   {% for root_link in menu_link_lists %} 
+    {%  render 'navigation-link-buttons',link_value: root_link, root_title: root_link.title, btn_level: btn_level %}
+    {% endfor %}
+ {% endif %} 
+
+{% if btn_level == ".level-1-link-btn" %}
+    {% for root_link in menu_link_lists %} 
+        {% for level_1_link in root_link.links %}
+            {%  render 'navigation-link-buttons',link_value: level_1_link, root_title: root_link.title ,btn_level: btn_level %}
+        {% endfor %}
+    {% endfor %}
+  {% endif %}  
+
+  {% if btn_level == ".level-2-link-btn" %}
+    {% for root_link in menu_link_lists %} 
+        {% for level_1_link in root_link.links %}
+            {% for level_2_link in level_1_link.links %}
+                {%  render 'navigation-link-buttons',link_value: level_2_link, root_title: level_1_link.title, btn_level: btn_level %}
+            {% endfor %}
+        {% endfor %}
+    {% endfor %}
+  {% endif %} 
+{% endcapture %}
+
+<ul main-menu class="text-black text-xl text-center flex flex-col py-2 px-6 gap-y-2 w-full">
+  {{ link_headers }}
+  {{ link_conditions }}
+</ul>
