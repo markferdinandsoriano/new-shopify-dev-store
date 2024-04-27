@@ -31,12 +31,44 @@
             "menu_level": "level-2",
             "custom_menu": "shop-by-brand"
           }
+        },
+        "image_6HrfEV": {
+          "type": "Image",
+          "settings": {
+            "image": "shopify://shop_images/sale-tag.jpg",
+            "image_parent_link": "Computers, Tablets & Printers"
+          }
+        },
+        "image_RnQVMc": {
+          "type": "Image",
+          "settings": {
+            "image": "shopify://shop_images/silver-threader-necklace_925x_da317249-7932-409f-95fc-abac4f8fe7d3.jpg",
+            "image_parent_link": "Computers, Tablets & Printers"
+          }
+        },
+        "image_GjNAcn": {
+          "type": "Image",
+          "settings": {
+            "image": "shopify://shop_images/yellow-sofa-with-throw-pillows_925x_15dfdc02-5735-4f1e-9064-7605dd28a050.jpg",
+            "image_parent_link": "Connected Home"
+          }
+        },
+        "image_6c3EFA": {
+          "type": "Image",
+          "settings": {
+            "image": "shopify://shop_images/dark-wall-bedside-table_925x_7a0f4f4c-4359-4c7a-8d1e-496d3c41c7af.jpg",
+            "image_parent_link": "Connected Home"
+          }
         }
       },
       "block_order": [
         "heading_PxA3ka",
         "heading_G7zxbt",
-        "heading_9LPK84"
+        "heading_9LPK84",
+        "image_6HrfEV",
+        "image_RnQVMc",
+        "image_GjNAcn",
+        "image_6c3EFA"
       ],
       "settings": {
       }
