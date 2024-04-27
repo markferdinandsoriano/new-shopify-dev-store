@@ -192,6 +192,20 @@ body:has(.section-header .drawer-menu) .announcement-bar-section .page-width {
   display: none;
 }
 
+.custom-images::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-images::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 10px #DDE3E6;
+  border-radius: 4px;
+}
+
+.custom-images::-webkit-scrollbar-thumb {
+  background: #8D8D8D;
+  border-radius: 4px;
+}
+
 .link-container::-webkit-scrollbar {
   width: 4px;
 }

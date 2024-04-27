@@ -41,7 +41,9 @@
           data-link-level-container="{{ link_level }}-container"
           data-btn-link-level=".{{ link_level }}-btn"
           data-custom-menu-attribute="{{ 'custom-menu-container' }}"
+          data-custom-image-selector=".custom-images"
           data-link-container-selector="link-container"
+          data-root-level-link-selector=".root-level-link-btn"
         >
           {% assign link_btn_value = link_level | prepend: '.' | append: '-btn' %}
           {% if link_level == 'root-level-link' %}
@@ -57,54 +59,11 @@
           {{ custom_menu_categories }}
         </navigation-menu-component>
       {% else %}
-        {{ custom_images }}
+        <div class="custom-images hidden col-span-3 gap-y-6 py-8 px-6 bg-white overflow-y-auto">
+          {{ custom_images }}
+        </div>
       {% endif %}
     {% endfor %}
-    {% comment %}
-      <div
-        class="link-container col-span-3 bg-white overflow-y-auto h-full"
-        data-link-level-container="root-level-link-container"
-        data-btn-link-level=".root-level-link-btn"
-        root-link-container
-      >
-        {% render 'navigation-link-container', btn_level: '.root-level-link-btn', root_links: root_links %}
-        {{ custom_menu_categories }}
-      </div>
-    {% endcomment %}
-    {% comment %}
-      <div
-        class="link-container col-span-3 bg-white hidden overflow-y-auto"
-        data-link-level-container="[level-1-link-container]"
-        data-btn-link-level=".level-1-link-btn"
-        level-1-link-container
-      >
-        {% render 'navigation-link-container',
-          btn_level: '.level-1-link-btn',
-          root_links: root_links,
-          link_headers: link_headers
-        %}
-        {{ custom_menu_categories }}
-      </div>
-      <div
-        class="link-container col-span-3 bg-white hidden overflow-y-auto"
-        data-link-level-container="[level-2-link-container]"
-        data-btn-link-level=".level-2-link-btn"
-        level-2-link-container
-      >
-        {% render 'navigation-link-container',
-          btn_level: '.level-2-link-btn',
-          root_links: root_links,
-          link_headers: link_headers
-        %}
-        {{ custom_menu_categories }}
-      </div>
-      <div
-        class="col-span-3 bg-white hidden overflow-y-auto "
-        custom-image-container
-      >
-        {{ custom_images }}
-      </div>
-    {% endcomment %}
   </div>
 </navigation-large-screen>
 

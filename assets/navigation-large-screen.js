@@ -5,7 +5,7 @@ class NavigationLargeScreen extends HTMLElement {
         this.navContentsSelector = '#nav-contents-desktop';
         this.rootLinkBtnSelector = '.root-level-link-btn';
         this.rootLinkContainerSelector = 'root-level-link-container';
-        this.customImageContainerSelector = '[custom-images]';
+        this.customImageContainerSelector = '.custom-images';
         this.linkContainerSelector = '.link-container';
         this.hamburgerIconSelector = '.hamburger-icon';
         this.exitIconSelector = '.exit-icon';
@@ -13,7 +13,6 @@ class NavigationLargeScreen extends HTMLElement {
 
     connectedCallback() {
         this.toggleOpenRootMenuContainer()
-        this.showRootMenu()
     }
 
     toggleOpenRootMenuContainer() {
@@ -25,8 +24,26 @@ class NavigationLargeScreen extends HTMLElement {
             const navContentsDesktop = this.querySelector(this.navContentsSelector);
             this.manageClasses(navContentsDesktop, ['toggle', 'toggle'], ['hidden', 'display-grid'])
 
+            this.hideOtherSiblingContainer();
+
             if (navContentsDesktop.classList.contains('hidden')) {
-                this.resetClassOfElements()
+                this.resetClassOfElements([
+                    {
+                        element: this.querySelector(this.hamburgerIconSelector),
+                        method: 'remove',
+                        classNames: 'hidden'
+                    },
+                    {
+                        element: this.querySelector(this.exitIconSelector),
+                        method: 'add',
+                        classNames: 'hidden'
+                    },
+                    {
+                        element: this.querySelector(this.customImageContainerSelector),
+                        method: ['add', 'remove'],
+                        classNames: ['hidden', 'display-grid']
+                    }
+                ])
 
                 rootLevelLinkBtns.forEach((rootLinkBtnElement) => {
                     this.manageClasses(rootLinkBtnElement, ['remove', 'add'], ['focus-btn', 'hover-btn'])
@@ -39,7 +56,7 @@ class NavigationLargeScreen extends HTMLElement {
         });
     }
 
-    showRootMenu() {
+    hideOtherSiblingContainer() {
         const linkContainers = this.querySelectorAll(`${this.navContentsSelector} > ${this.linkContainerSelector}`);
         if (!(linkContainers instanceof NodeList) && !linkContainers.length) return;
 
@@ -64,33 +81,8 @@ class NavigationLargeScreen extends HTMLElement {
         }
     }
 
-    resetClassOfElements() {
-        const elementsToReset = [
-            {
-                element: this.querySelector(this.hamburgerIconSelector),
-                method: 'remove',
-                classNames: 'hidden'
-            },
-            {
-                element: this.querySelector(this.exitIconSelector),
-                method: 'add',
-                classNames: 'hidden'
-            },
-            {
-                element: this.querySelector(this.customImageContainerSelector),
-                method: ['add', 'remove'],
-                classNames: ['hidden', 'display-grid']
-            }, {
-                element: this.querySelector(this.level1LinkContainerSelector),
-                method: 'add',
-                classNames: 'hidden'
-            }, {
-                element: this.querySelector(this.level2LinkContainerSelector),
-                method: 'add',
-                classNames: 'hidden'
-            }
-        ]
-
+    resetClassOfElements(elementsToReset) {
+        if (!elementsToReset.length) return;
         elementsToReset.forEach(({ element, method, classNames }) => {
             this.manageClasses(element, method, classNames)
         })

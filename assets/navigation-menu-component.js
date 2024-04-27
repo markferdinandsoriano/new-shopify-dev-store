@@ -1,11 +1,13 @@
 class NavigationMenuComponent extends HTMLElement {
     constructor() {
         super();
-        const { linkLevelContainer, btnLinkLevel, customMenuAttribute, linkContainerSelector } = this.dataset
+        const { linkLevelContainer, btnLinkLevel, customMenuAttribute, customImageSelector, linkContainerSelector, rootLevelLinkSelector } = this.dataset
         this.linkLevelContainer = linkLevelContainer;
         this.btnLinkLevel = btnLinkLevel;
-        this.customMenuAttribute = customMenuAttribute
-        this.commonLinkAttribute = linkContainerSelector
+        this.customImageSelector = customImageSelector;
+        this.customMenuAttribute = customMenuAttribute;
+        this.commonLinkAttribute = linkContainerSelector;
+        this.rootLinkLevelSelector = rootLevelLinkSelector;
         this.navigationLargeScreenMainComponent = document.querySelector('navigation-large-screen')
     }
 
@@ -35,7 +37,11 @@ class NavigationMenuComponent extends HTMLElement {
                     this.showChildMenu(title, this.nextElementSibling)
                     this.renderLinkHeaders(this.nextElementSibling, title)
                     this.showCustomMenu(this.nextElementSibling, title)
+                    this.showCustomImageMenu(btnLevel, title, true);
+                } else {
+                    this.showCustomImageMenu(btnLevel, title, false);
                 }
+
                 this.selectNextElementSibling(this.nextElementSibling, title, true, !hasChildLinks)
             })
         })
@@ -90,6 +96,30 @@ class NavigationMenuComponent extends HTMLElement {
 
         } else {
             element.classList.add('hidden');
+        }
+    }
+
+    showCustomImageMenu(btnLevel, title, hasChildLinks) {
+        const customImageMenu = document.querySelector(this.customImageSelector);
+        const currentImages = customImageMenu.querySelectorAll('div');
+
+        if (!customImageMenu) return;
+
+        if (btnLevel !== this.rootLinkLevelSelector) return;
+
+        if (hasChildLinks) {
+            this.navigationLargeScreenMainComponent.manageClasses(customImageMenu, ['remove', 'add'], ['hidden', 'display-grid'])
+            currentImages.forEach((imgContainerElement) => {
+                if (imgContainerElement.dataset.title === title) {
+                    imgContainerElement.classList.remove('hidden')
+                } else {
+                    imgContainerElement.classList.add('hidden')
+                }
+            })
+        }
+
+        if (btnLevel === this.rootLinkLevelSelector && !hasChildLinks) {
+            this.navigationLargeScreenMainComponent.manageClasses(customImageMenu, ['add', 'remove'], ['hidden', 'display-grid'])
         }
     }
 
