@@ -54,7 +54,7 @@ class NavigationMenuMain extends HTMLElement {
     }
 
     toggleShowMobileScreen(mainContainer) {
-        if (!mainContainer.classList.contains('hidden')) {
+        if (!(mainContainer.classList.contains('hidden'))) {
             this.triggerMobileExit(mainContainer)
         }
         this.resetRootLevelBtns()
