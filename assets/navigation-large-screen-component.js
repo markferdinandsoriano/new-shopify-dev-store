@@ -1,4 +1,4 @@
-class NavigationMenuComponent extends HTMLElement {
+class NavigationLargeScreenComponent extends HTMLElement {
     constructor() {
         super();
         const { linkLevelContainer, btnLinkLevel, customMenuAttribute, customImageSelector, linkContainerSelector, rootLevelLinkSelector } = this.dataset
@@ -8,7 +8,7 @@ class NavigationMenuComponent extends HTMLElement {
         this.customMenuAttribute = customMenuAttribute;
         this.commonLinkAttribute = linkContainerSelector;
         this.rootLinkLevelSelector = rootLevelLinkSelector;
-        this.navigationLargeScreenMainComponent = document.querySelector('navigation-large-screen')
+        this.navigationMainMenu = document.querySelector('navigation-menu-main')
     }
 
     connectedCallback() {
@@ -29,11 +29,11 @@ class NavigationMenuComponent extends HTMLElement {
 
                 const notSelectedBtnLinkElements = this.querySelectorAll(`${btnLevel}:not([data-title="${title}"])`);
 
-                this.navigationLargeScreenMainComponent.removeHighlightsOfNotSelected(notSelectedBtnLinkElements, this.nextElementSibling)
+                this.navigationMainMenu.removeHighlightsOfNotSelected(notSelectedBtnLinkElements, this.nextElementSibling)
 
-                this.navigationLargeScreenMainComponent.manageClasses(element, ['add', 'remove'], ['focus-btn', 'hover-btn'])
+                this.navigationMainMenu.manageClasses(element, ['add', 'remove'], ['focus-btn', 'hover-btn'])
                 if (hasChildLinks) {
-                    this.navigationLargeScreenMainComponent.changeChevronIconColor(element, '#fff');
+                    this.navigationMainMenu.changeChevronIconColor(element, '#fff');
                     this.showChildMenu(title, this.nextElementSibling)
                     this.renderLinkHeaders(this.nextElementSibling, title)
                     this.showCustomMenu(this.nextElementSibling, title)
@@ -91,7 +91,7 @@ class NavigationMenuComponent extends HTMLElement {
         if (currentElementTitle === parentTitle) {
             element.classList.remove('hidden');
             element.querySelectorAll('button').forEach((btnElement) => {
-                this.navigationLargeScreenMainComponent.manageClasses(btnElement, 'remove', 'hidden');
+                this.navigationMainMenu.manageClasses(btnElement, 'remove', 'hidden');
             })
 
         } else {
@@ -108,7 +108,7 @@ class NavigationMenuComponent extends HTMLElement {
         if (btnLevel !== this.rootLinkLevelSelector) return;
 
         if (hasChildLinks) {
-            this.navigationLargeScreenMainComponent.manageClasses(customImageMenu, ['remove', 'add'], ['hidden', 'display-grid'])
+            this.navigationMainMenu.manageClasses(customImageMenu, ['remove', 'add'], ['hidden', 'display-grid'])
             currentImages.forEach((imgContainerElement) => {
                 if (imgContainerElement.dataset.title === title) {
                     imgContainerElement.classList.remove('hidden')
@@ -119,7 +119,7 @@ class NavigationMenuComponent extends HTMLElement {
         }
 
         if (btnLevel === this.rootLinkLevelSelector && !hasChildLinks) {
-            this.navigationLargeScreenMainComponent.manageClasses(customImageMenu, ['add', 'remove'], ['hidden', 'display-grid'])
+            this.navigationMainMenu.manageClasses(customImageMenu, ['add', 'remove'], ['hidden', 'display-grid'])
         }
     }
 
@@ -141,7 +141,7 @@ class NavigationMenuComponent extends HTMLElement {
 
         if (nextLevelElement) {
             const resetNextLevelElementBtns = baseTargetElement?.querySelectorAll(`button:not([data-root-title="${title}"])`)
-            this.navigationLargeScreenMainComponent.removeHighlightsOfNotSelected(resetNextLevelElementBtns)
+            this.navigationMainMenu.removeHighlightsOfNotSelected(resetNextLevelElementBtns)
             this.hideOtherElementsIfNoLinks(hasChildLinks, baseTargetElement)
             this.selectNextElementSibling(baseTargetElement.nextElementSibling, title, nextLevelElement);
         }
@@ -149,13 +149,13 @@ class NavigationMenuComponent extends HTMLElement {
 
     hideOtherElementsIfNoLinks(hasChildLinks, elementContainerToHide) {
         if (hasChildLinks && elementContainerToHide) {
-            this.navigationLargeScreenMainComponent.manageClasses(elementContainerToHide, ['add'], ['hidden'])
+            this.navigationMainMenu.manageClasses(elementContainerToHide, ['add'], ['hidden'])
         }
     }
 
 
 }
 
-if (!customElements.get('navigation-menu-component')) {
-    customElements.define('navigation-menu-component', NavigationMenuComponent);
+if (!customElements.get('navigation-large-screen-component')) {
+    customElements.define('navigation-large-screen-component', NavigationLargeScreenComponent);
 }
