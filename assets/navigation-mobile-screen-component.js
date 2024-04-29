@@ -12,6 +12,7 @@ class NavigationMobileScreenComponent extends HTMLElement {
             rootLinkBtnSelector,
             level1LinkBtnSelector,
             level2LinkBtnSelector,
+            accountMenuContainerSelector,
             exitIconSelector
         } = this.dataset
 
@@ -25,11 +26,12 @@ class NavigationMobileScreenComponent extends HTMLElement {
         this.navigationMainMenu = document.querySelector('navigation-menu-main')
         this.level1LinkBtnSelector = level1LinkBtnSelector;
         this.level2LinkBtnSelector = level2LinkBtnSelector;
+        this.accountMenuContainerSelector = accountMenuContainerSelector
         this.exitIconSelector = exitIconSelector
     }
 
     connectedCallback() {
-        this.showLinkBtns(this.rootLinkBtnSelector);
+        this.highLightLinkBtns(this.rootLinkBtnSelector);
         this.triggerBacktBtn();
     }
 
@@ -41,14 +43,15 @@ class NavigationMobileScreenComponent extends HTMLElement {
         backBtn.addEventListener('click', () => {
             const currentBtnLevel = backBtn.dataset.btnLevel;
             const rootTitle = backBtn.dataset.rootTitle;
-
             this.backToPreviousLink(currentBtnLevel, rootTitle)
         })
     }
 
-    showLinkBtns(btnSelector) {
+    highLightLinkBtns(btnSelector) {
         const currentLinkBtns = this.querySelectorAll(btnSelector);
         if (!(currentLinkBtns instanceof NodeList) && currentLinkBtns.length) return;
+
+        this.showCustomMenuAndImages(btnSelector);
 
         currentLinkBtns.forEach((btnElement) => {
             btnElement.addEventListener('click', () => {
@@ -62,39 +65,121 @@ class NavigationMobileScreenComponent extends HTMLElement {
                 } else {
 
                 }
-
             })
         })
+
+        this.showAccountMenu(btnSelector);
     }
 
     backToPreviousLink(btnLevel, rootTitle) {
         const action = 'back'
         if (btnLevel === this.level2LinkBtnSelector) {
-            this.hideOtherElements(this.level1LinkBtnSelector, rootTitle, [this.querySelectorAll(`button[data-btn-level="${btnLevel}"]`), this.querySelectorAll(`button[data-btn-level="${this.rootLinkBtnSelector}"]`)], action)
+            const elementsToHideSelectors = [`button[data-btn-level="${btnLevel}"]`, `button[data-btn-level="${this.rootLinkBtnSelector}"]`];
+            this.hideOtherElements(this.level1LinkBtnSelector, rootTitle, [...this.mergeNodeList(elementsToHideSelectors)], action)
+            this.showCustomMenuAndImages(this.level1LinkBtnSelector, rootTitle);
             this.showBackBtnElement(rootTitle, this.level1LinkBtnSelector, null, action)
+            this.showAccountMenu(this.level1LinkBtnSelector);
             return;
         }
 
         if (btnLevel === this.level1LinkBtnSelector) {
-            this.hideOtherElements(this.rootLinkBtnSelector, rootTitle, [this.querySelectorAll(`button[data-btn-level="${btnLevel}"]`), this.querySelectorAll(`button[data-btn-level="${this.level2LinkBtnSelector}"]`)], action)
-            this.showBackBtnElement(rootTitle, this.rootLinkBtnSelector, null, action)
+            const elementsToHideSelectors = [`button[data-btn-level="${btnLevel}"]`, `button[data-btn-level="${this.level2LinkBtnSelector}"]`];
+            this.hideOtherElements(this.rootLinkBtnSelector, rootTitle, [...this.mergeNodeList(elementsToHideSelectors)], action)
+            this.showCustomMenuAndImages(this.rootLinkBtnSelector, rootTitle);
+            this.showBackBtnElement(rootTitle, this.rootLinkBtnSelector, null, action);
+            this.showAccountMenu(this.rootLinkBtnSelector);
             return;
         }
 
     }
 
+    showAccountMenu(currentBtnLevel) {
+        const accountMenuContainer = this.querySelector(this.accountMenuContainerSelector);
+
+        if (currentBtnLevel === this.rootLinkBtnSelector) {
+            this.navigationMainMenu.manageClasses(accountMenuContainer, 'remove', 'hidden');
+        } else {
+            this.navigationMainMenu.manageClasses(accountMenuContainer, 'add', 'hidden');
+        }
+    }
+
     showNextLinkBtns(title, btnLevel, rootTitle) {
         if (btnLevel === this.rootLinkBtnSelector) {
-            this.hideOtherElements(this.level1LinkBtnSelector, title, [this.querySelectorAll(`button[data-btn-level="${btnLevel}"]`), this.querySelectorAll(`button[data-btn-level="${this.level2LinkBtnSelector}"]`)])
-            this.showLinkBtns(this.level1LinkBtnSelector);
+            const elementsToHideSelectors = [`button[data-btn-level="${btnLevel}"]`, `button[data-btn-level="${this.level2LinkBtnSelector}"]`];
+            this.hideOtherElements(this.level1LinkBtnSelector, title, [...this.mergeNodeList(elementsToHideSelectors)])
+            this.showCustomMenuAndImages(this.level1LinkBtnSelector, title);
+            this.highLightLinkBtns(this.level1LinkBtnSelector);
             this.showBackBtnElement(title, this.level1LinkBtnSelector, rootTitle)
             return;
         }
 
         if (btnLevel === this.level1LinkBtnSelector) {
-            this.hideOtherElements(this.level2LinkBtnSelector, title, [this.querySelectorAll(`button[data-btn-level="${btnLevel}"]`), this.querySelectorAll(`button[data-btn-level="${this.rootLinkBtnSelector}"]`)])
-            this.showLinkBtns(this.level2LinkBtnSelector)
+            const elementsToHideSelectors = [`button[data-btn-level="${btnLevel}"]`, `button[data-btn-level="${this.rootLinkBtnSelector}"]`];
+            this.hideOtherElements(this.level2LinkBtnSelector, title, [...this.mergeNodeList(elementsToHideSelectors)])
+            this.showCustomMenuAndImages(this.level2LinkBtnSelector, title);
+            this.highLightLinkBtns(this.level2LinkBtnSelector)
             this.showBackBtnElement(title, this.level2LinkBtnSelector, rootTitle)
+            return;
+        }
+    }
+
+    mergeNodeList(selectors) {
+        if (!selectors.length) return;
+        const resultElements = selectors.map((selector) => Array.from(this.querySelectorAll(selector)))
+        return resultElements.flat();
+    }
+
+    showCustomMenuAndImages(currentBtnLevel, title) {
+        this.renderCustomImageMenu(currentBtnLevel, title);
+        this.processCustomMenu(currentBtnLevel, title);
+    }
+
+    renderCustomImageMenu(currentBtnLevel, title) {
+        if (!currentBtnLevel) return;
+        const customImageMenuContainer = this.querySelector(this.customImageSelector);
+
+        if (!customImageMenuContainer) return;
+
+        if (currentBtnLevel === this.rootLinkBtnSelector) {
+            this.navigationMainMenu.manageClasses(customImageMenuContainer, 'add', 'hidden');
+            return;
+        }
+
+        this.navigationMainMenu.manageClasses(customImageMenuContainer, 'remove', 'hidden');
+
+        if (currentBtnLevel === this.level1LinkBtnSelector && title) {
+            const customImages = customImageMenuContainer.querySelectorAll('div');
+            this.navigationMainMenu.hideElementIfNotMatched(customImages, title, 'title');
+        }
+    }
+
+
+    processCustomMenu(currentBtnLevel, title) {
+        if (!currentBtnLevel) return;
+        const customMenu = this.querySelectorAll(this.customMenuAttribute);
+
+        if (!(customMenu instanceof NodeList) && !customMenu.length && customMenu) return;
+
+        customMenu.forEach((element) => {
+            this.renderCustomMenu(element, currentBtnLevel, title);
+        })
+    }
+
+    renderCustomMenu(element, currentBtnLevel, title) {
+        const { btnLevel, parentTitle } = element.dataset;
+
+        if (btnLevel === this.rootLinkBtnSelector && !title) {
+            this.navigationMainMenu.manageClasses(element, 'remove', 'hidden');
+            return;
+        }
+
+        if (title && btnLevel === currentBtnLevel && parentTitle === title) {
+            this.navigationMainMenu.manageClasses(element, 'remove', 'hidden');
+            return;
+        }
+
+        if (title) {
+            this.navigationMainMenu.manageClasses(element, 'add', 'hidden');
             return;
         }
 
@@ -113,17 +198,18 @@ class NavigationMobileScreenComponent extends HTMLElement {
 
     renderTitleContent(btnParentElement, menuTitleParentElement, menuMainTitleElement, backBtnClass, title, btnLevel, rootTitle, action) {
         if ('back' === action && btnLevel === this.rootLinkBtnSelector) {
-            this.changeTitleContent(menuMainTitleElement, backBtnClass, 'Harvey Norman', btnLevel, 'Harvey Norman')
+            this.changeBackBtnAttributeValue(menuMainTitleElement, backBtnClass, 'Harvey Norman', btnLevel, 'Harvey Norman')
             this.navigationMainMenu.manageClasses(btnParentElement, ['add', 'remove'], ['hidden', 'display-grid'])
             this.navigationMainMenu.manageClasses(menuTitleParentElement, ['remove', 'add'], ['col-span-2', 'col-span-3'])
         } else {
-            this.changeTitleContent(menuMainTitleElement, backBtnClass, title, btnLevel, rootTitle)
+            this.changeBackBtnAttributeValue(menuMainTitleElement, backBtnClass, title, btnLevel, rootTitle)
             this.navigationMainMenu.manageClasses(btnParentElement, ['remove', 'add'], ['hidden', 'display-grid'])
             this.navigationMainMenu.manageClasses(menuTitleParentElement, ['add', 'remove'], ['col-span-2', 'col-span-3'])
         }
     }
 
-    changeTitleContent(menuMainTitleElement, backBtnClass, title, btnLevel, rootTitle) {
+    changeBackBtnAttributeValue(menuMainTitleElement, backBtnClass, title, btnLevel, rootTitle) {
+
         menuMainTitleElement.textContent = title;
         backBtnClass.setAttribute('data-title', title)
         backBtnClass.setAttribute('data-btn-level', btnLevel)
@@ -140,23 +226,19 @@ class NavigationMobileScreenComponent extends HTMLElement {
 
         if (!elementsToHide.length && !nextLinkBtnSelector) return;
 
-        elementsToHide.forEach((element) => {
-            this.navigationMainMenu.manageClasses(element, ['add'], ['hidden'])
-        })
+        this.navigationMainMenu.manageClasses(elementsToHide, 'add', 'hidden');
 
-        if ('back' === action && nextLinkBtnSelector === this.rootLinkBtnSelector) {
-            nextLinkBtns.forEach((element) => {
+        nextLinkBtns.forEach((element) => {
+            if ('back' === action && nextLinkBtnSelector === this.rootLinkBtnSelector) {
                 element.classList.remove('hidden')
                 this.navigationMainMenu.manageClasses(element, ['remove', 'add'], ['focus-btn', 'hover-btn'])
                 this.navigationMainMenu.changeChevronIconColor(element, '#000');
-            })
-        } else {
-            nextLinkBtns.forEach((element) => {
-                if (element.dataset.rootTitle !== title) return;
-                this.navigationMainMenu.manageClasses(element, 'remove', 'hidden');
-                this.navigationMainMenu.removeHighlightsOfNotSelected(element);
-            })
-        }
+            }
+
+            if (element.dataset.rootTitle !== title) return;
+            this.navigationMainMenu.manageClasses(element, 'remove', 'hidden');
+            this.navigationMainMenu.removeHighlightsOfNotSelected(element);
+        })
     }
 
 }

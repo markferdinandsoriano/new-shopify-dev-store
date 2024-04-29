@@ -1,10 +1,12 @@
 class NavigationLargeScreenComponent extends HTMLElement {
     constructor() {
         super();
-        const { linkLevelContainer, btnLinkLevel, customMenuAttribute, customImageSelector, linkContainerSelector, rootLevelLinkSelector } = this.dataset
+        const { linkLevelContainer, btnLinkLevel, linksTitleSelector, linksSecondarySelector, customMenuAttribute, customImageSelector, linkContainerSelector, rootLevelLinkSelector } = this.dataset
         this.linkLevelContainer = linkLevelContainer;
         this.btnLinkLevel = btnLinkLevel;
         this.customImageSelector = customImageSelector;
+        this.linksTitleSelector = linksTitleSelector
+        this.linksSecondarySelector = linksSecondarySelector
         this.customMenuAttribute = customMenuAttribute;
         this.commonLinkAttribute = linkContainerSelector;
         this.rootLinkLevelSelector = rootLevelLinkSelector;
@@ -52,24 +54,14 @@ class NavigationLargeScreenComponent extends HTMLElement {
         currentLinkContainer.classList.remove('hidden');
         const currentLinkBtnSelector = currentLinkContainer.dataset.btnLinkLevel;
         const currentLinkBtns = currentLinkContainer.querySelectorAll(currentLinkBtnSelector);
+
         if (!(currentLinkBtns instanceof NodeList) && currentLinkBtns.length) return;
-
-        currentLinkBtns.forEach((element) => {
-            const { rootTitle: title } = element.dataset;
-
-            if (title === rootTitle) {
-                element.classList.remove('hidden');
-            } else {
-                element.classList.add('hidden');
-            }
-
-        })
-
+        this.navigationMainMenu.hideElementIfNotMatched(currentLinkBtns, rootTitle, 'rootTitle');
     }
 
     showCustomMenu(currentLinkContainer, parentTitle) {
-        if (!parentTitle || !currentLinkContainer || !currentLinkContainer.classList.contains('link-container')) return;
-        const customMenuContainers = currentLinkContainer.querySelectorAll(`[${this.customMenuAttribute}]`);
+        if (!parentTitle || !currentLinkContainer || !currentLinkContainer.classList.contains(this.commonLinkAttribute)) return;
+        const customMenuContainers = currentLinkContainer.querySelectorAll(this.customMenuAttribute);
 
         if (!(customMenuContainers instanceof NodeList) && !customMenuContainers.length) return;
 
@@ -86,6 +78,7 @@ class NavigationLargeScreenComponent extends HTMLElement {
             }
         })
     }
+
     showCustomMenuLinks(currentElementTitle, parentTitle, element) {
         if (!currentElementTitle || !parentTitle || !element) return;
         if (currentElementTitle === parentTitle) {
@@ -109,13 +102,7 @@ class NavigationLargeScreenComponent extends HTMLElement {
 
         if (hasChildLinks) {
             this.navigationMainMenu.manageClasses(customImageMenu, ['remove', 'add'], ['hidden', 'display-grid'])
-            currentImages.forEach((imgContainerElement) => {
-                if (imgContainerElement.dataset.title === title) {
-                    imgContainerElement.classList.remove('hidden')
-                } else {
-                    imgContainerElement.classList.add('hidden')
-                }
-            })
+            this.navigationMainMenu.hideElementIfNotMatched(currentImages, title, 'title');
         }
 
         if (btnLevel === this.rootLinkLevelSelector && !hasChildLinks) {
@@ -124,10 +111,10 @@ class NavigationLargeScreenComponent extends HTMLElement {
     }
 
     renderLinkHeaders(nextLinkContainer, rootTitle) {
-        if (!nextLinkContainer || !nextLinkContainer.classList.contains('link-container')) return;
+        if (!nextLinkContainer || !nextLinkContainer.classList.contains(this.commonLinkAttribute)) return;
 
-        const nextMenuHeaderTitle = nextLinkContainer.querySelector('.link-headers .link-title');
-        const nextMenuSecondaryTitle = nextLinkContainer.querySelector('.link-headers .link-secondary-title');
+        const nextMenuHeaderTitle = nextLinkContainer.querySelector(this.linksTitleSelector);
+        const nextMenuSecondaryTitle = nextLinkContainer.querySelector(this.linksSecondarySelector);
 
         if (nextMenuHeaderTitle && nextMenuSecondaryTitle) {
             nextMenuHeaderTitle.textContent = rootTitle;
@@ -137,7 +124,7 @@ class NavigationLargeScreenComponent extends HTMLElement {
 
     selectNextElementSibling(baseTargetElement, title, isBaseTargetExist, hasChildLinks) {
         if (!isBaseTargetExist) return;
-        const nextLevelElement = baseTargetElement.classList.contains('link-container');
+        const nextLevelElement = baseTargetElement.classList.contains(this.commonLinkAttribute);
 
         if (nextLevelElement) {
             const resetNextLevelElementBtns = baseTargetElement?.querySelectorAll(`button:not([data-root-title="${title}"])`)

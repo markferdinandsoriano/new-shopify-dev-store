@@ -1,59 +1,58 @@
 {% if link_level_container_selector == 'root-level' %}
-  <hr
-    custom-menu-container
+  <div
     data-link-level-container="{{ link_level_container_selector }}-link-container"
+    data-btn-level=".{{ link_level_container_selector }}-link-btn"
     data-parent-title="{{ block.settings.parent_link }}"
-    class="hidden"
+    class="custom-menu-container hidden"
   >
-  <ul
-    custom-menu-container
-    data-link-level-container="{{ link_level_container_selector }}-link-container"
-    data-parent-title="{{ block.settings.parent_link }}"
-    class="hidden text-black text-xl text-center flex flex-col py-2 px-6 gap-y-2 w-full"
-  >
-    <span class="cursor-pointer p-[8px] h-[44px]">
-      <h1
-        class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
-      >
-        {{ block.settings.heading }}
-      </h1>
-    </span>
-  </ul>
+    <hr>
+    <ul
+      class="text-xl text-center flex flex-col p-2 gap-y-2 w-full"
+    >
+      <span class="cursor-pointer p-[8px] h-[2.75rem]">
+        <h1
+          class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
+        >
+          {{ block.settings.heading }}
+        </h1>
+      </span>
+    </ul>
+  </div>
 {% else %}
-  <hr
+  <div
     custom-menu-container
     data-link-level-container="{{ link_level_container_selector }}-link-container"
+    data-btn-level=".{{ link_level_container_selector }}-link-btn"
     data-parent-title="{{ block.settings.parent_link }}"
-    class="hidden"
+    class="custom-menu-container hidden"
   >
-  <ul
-    custom-menu-container
-    data-link-level-container="{{ link_level_container_selector }}-link-container"
-    data-parent-title="{{ block.settings.parent_link }}"
-    class="hidden text-xl text-center flex flex-col py-2 px-6 gap-y-2 w-full"
-  >
-    <span class="p-[8px] h-[44px] pointer-events-none">
-      <h1
-        class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
-      >
-        {{ block.settings.heading }}
-      </h1>
-    </span>
-    {% for custom_child_menu in block.settings.custom_menu.links %}
-      <button
-        class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn text-black {{ link_level_container_selector }}-link-btn"
-        data-title="{{ block.settings.parent_link }}"
-        data-child-title="{{ custom_child_menu.title }}"
-      >
-        <span class="text-[18px] font-normal pointer-events-none">
-          {{ custom_child_menu.title }}
-        </span>
-        {% if custom_child_menu.links != blank and link_level_container_selector != 'level-2' %}
-          <span class="block w-[1.125rem] h-[1.125rem] pointer-events-none">
-            {% render 'chevron-right' %}
+    <hr>
+    <ul
+      class="text-xl text-center flex flex-col p-2 gap-y-2 w-full"
+    >
+      <span class="p-[8px] h-[2.75rem] pointer-events-none">
+        <h1
+          class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
+        >
+          {{ block.settings.heading }}
+        </h1>
+      </span>
+      {% for custom_child_menu in block.settings.custom_menu.links %}
+        <button
+          class="w-full flex flex-row items-center justify-between p-[8px] h-[2.75rem] hover-btn text-black {{ link_level_container_selector }}-link-btn"
+          data-title="{{ block.settings.parent_link }}"
+          data-child-title="{{ custom_child_menu.title }}"
+        >
+          <span class="text-[18px] font-normal pointer-events-none">
+            {{ custom_child_menu.title }}
           </span>
-        {% endif %}
-      </button>
-    {% endfor %}
-  </ul>
+          {% if custom_child_menu.links != blank and link_level_container_selector != 'level-2' %}
+            <span class="block w-[1.125rem] h-[1.125rem] pointer-events-none">
+              {% render 'chevron-right' %}
+            </span>
+          {% endif %}
+        </button>
+      {% endfor %}
+    </ul>
+  </div>
 {% endif %}

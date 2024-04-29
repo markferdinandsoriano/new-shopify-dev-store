@@ -233,7 +233,27 @@ class NavigationMenuMain extends HTMLElement {
             return;
         }
 
+        if (elements.length && !Array.isArray(method) && !Array.isArray(classNames)) {
+            elements.forEach((element) => {
+                element.classList[method](classNames);
+            })
+            return;
+        }
+
         elements.classList[method](classNames);
+    }
+
+    hideElementIfNotMatched(elements, valueToMatch, dataSetAttribute) {
+        if (!(elements instanceof NodeList) && !elements.length && !elements) return;
+
+        elements.forEach((element) => {
+            if (element.dataset[dataSetAttribute] === valueToMatch) {
+                element.classList.remove('hidden')
+            } else {
+                element.classList.add('hidden')
+            }
+        })
+
     }
 
     removeSpecificElement(elements) {

@@ -1,5 +1,5 @@
 {% capture mobile_screen_accounts_menu %}
-<ul class="account-menu text-[#373737] text-xl text-center bg-[#F3F4F5] flex flex-col gap-y-1 w-full h-auto">
+<ul class="account-menu text-[#373737] text-xl text-center bg-[#F3F4F5] flex flex-col gap-y-2 w-full h-auto">
   <hr class="account-menu">
   <button
     class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn"
@@ -77,7 +77,8 @@
         data-exit-icon-selector=".mobile-exit-icon"
         data-parent-container-selector="#menu-container"
         data-menu-main-title-selector=".title-header"
-        data-custom-menu-attribute="{{ 'custom-menu-container'}}"
+        data-custom-menu-attribute=".custom-menu-container"
+        data-account-menu-container-selector=".account-menu"
         data-custom-image-selector=".custom-images"
         data-link-container-selector="link-container"
         data-root-link-btn-selector=".root-level-link-btn"
@@ -88,7 +89,7 @@
         {% render 'navigation-link-container', menu_link_lists: menu_link_lists, screen: 'mobile_screen' %}
         {{ custom_menu_categories }}
         {{ mobile_screen_accounts_menu }}
-        <div class="custom-images hidden gap-y-6 py-8 px-6 bg-white">
+        <div class="custom-images hidden py-8 gap-y-6 bg-white">
           <hr>
           {{ custom_images }}
         </div>
