@@ -71,6 +71,34 @@ class NavigationMobileScreenComponent extends HTMLElement {
         this.showAccountMenu(btnSelector);
     }
 
+    showPrevOrNextLink(btnLevel, rootTitle, action, title) {
+        if ('back' === action) {
+            this.showParentMenu(btnLevel, rootTitle, action)
+        } else {
+
+        }
+    }
+
+    showNextLinkBtns(title, btnLevel, rootTitle) {
+        if (btnLevel === this.rootLinkBtnSelector) {
+            const elementsToHideSelectors = [`button[data-btn-level="${btnLevel}"]`, `button[data-btn-level="${this.level2LinkBtnSelector}"]`];
+            this.hideOtherElements(this.level1LinkBtnSelector, title, [...this.mergeNodeListArray(elementsToHideSelectors)])
+            this.showCustomMenuAndImages(this.level1LinkBtnSelector, title);
+            this.highLightLinkBtns(this.level1LinkBtnSelector);
+            this.showBackBtnElement(title, this.level1LinkBtnSelector, rootTitle)
+            return;
+        }
+
+        if (btnLevel === this.level1LinkBtnSelector) {
+            const elementsToHideSelectors = [`button[data-btn-level="${btnLevel}"]`, `button[data-btn-level="${this.rootLinkBtnSelector}"]`];
+            this.hideOtherElements(this.level2LinkBtnSelector, title, [...this.mergeNodeListArray(elementsToHideSelectors)])
+            this.showCustomMenuAndImages(this.level2LinkBtnSelector, title);
+            this.highLightLinkBtns(this.level2LinkBtnSelector)
+            this.showBackBtnElement(title, this.level2LinkBtnSelector, rootTitle)
+            return;
+        }
+    }
+
     backToPreviousLink(btnLevel, rootTitle) {
         const action = 'back'
         if (btnLevel === this.level2LinkBtnSelector) {
@@ -103,27 +131,9 @@ class NavigationMobileScreenComponent extends HTMLElement {
         }
     }
 
-    showNextLinkBtns(title, btnLevel, rootTitle) {
-        if (btnLevel === this.rootLinkBtnSelector) {
-            const elementsToHideSelectors = [`button[data-btn-level="${btnLevel}"]`, `button[data-btn-level="${this.level2LinkBtnSelector}"]`];
-            this.hideOtherElements(this.level1LinkBtnSelector, title, [...this.mergeNodeList(elementsToHideSelectors)])
-            this.showCustomMenuAndImages(this.level1LinkBtnSelector, title);
-            this.highLightLinkBtns(this.level1LinkBtnSelector);
-            this.showBackBtnElement(title, this.level1LinkBtnSelector, rootTitle)
-            return;
-        }
 
-        if (btnLevel === this.level1LinkBtnSelector) {
-            const elementsToHideSelectors = [`button[data-btn-level="${btnLevel}"]`, `button[data-btn-level="${this.rootLinkBtnSelector}"]`];
-            this.hideOtherElements(this.level2LinkBtnSelector, title, [...this.mergeNodeList(elementsToHideSelectors)])
-            this.showCustomMenuAndImages(this.level2LinkBtnSelector, title);
-            this.highLightLinkBtns(this.level2LinkBtnSelector)
-            this.showBackBtnElement(title, this.level2LinkBtnSelector, rootTitle)
-            return;
-        }
-    }
 
-    mergeNodeList(selectors) {
+    mergeNodeListArray(selectors) {
         if (!selectors.length) return;
         const resultElements = selectors.map((selector) => Array.from(this.querySelectorAll(selector)))
         return resultElements.flat();
@@ -209,7 +219,6 @@ class NavigationMobileScreenComponent extends HTMLElement {
     }
 
     changeBackBtnAttributeValue(menuMainTitleElement, backBtnClass, title, btnLevel, rootTitle) {
-
         menuMainTitleElement.textContent = title;
         backBtnClass.setAttribute('data-title', title)
         backBtnClass.setAttribute('data-btn-level', btnLevel)
