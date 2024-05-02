@@ -21,10 +21,11 @@ class NavigationLargeScreenComponent extends HTMLElement {
         const currentLinkBtns = this.querySelectorAll(this.btnLinkLevel);
 
         if (!(currentLinkBtns instanceof NodeList) && currentLinkBtns.length) return;
-
+        console.log('currentLinkBtns', currentLinkBtns)
         currentLinkBtns.forEach((element) => {
             element.addEventListener('click', (e) => {
                 e.preventDefault();
+
                 const { title, btnLevel } = element.dataset;
 
                 const hasChildLinks = element.querySelector('.chevron-right-icon > path');
@@ -86,7 +87,6 @@ class NavigationLargeScreenComponent extends HTMLElement {
             element.querySelectorAll('button').forEach((btnElement) => {
                 this.navigationMainMenu.manageClasses(btnElement, 'remove', 'hidden');
             })
-
         } else {
             element.classList.add('hidden');
         }

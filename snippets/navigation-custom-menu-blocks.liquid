@@ -1,3 +1,28 @@
+{% liquid
+  assign has_child_links = false
+  assign parent_link = false
+  assign ul_class = 'text-xl text-center flex flex-col p-2 gap-y-2 w-full'
+  assign span_class = 'cursor-pointer p-[8px] h-[2.75rem] pointer-events-none'
+  assign header_class = 'text-[18px] text-left text-[#373737] font-bold pointer-events-none'
+
+  if link_level_container_selector == 'level-1'
+    for custom_menu in block.settings.custom_menu.links
+      if custom_menu.links != blank
+        assign has_child_links = custom_menu.links
+        assign parent_link = custom_menu.title
+      endif
+    endfor
+  endif
+%}
+
+{% capture custom_link_btns %}
+{% if has_child_links != false  %}
+  {%  for child_link in has_child_links %}
+    {%  render 'navigation-link-buttons',has_links:child_link.links,link_title_value: child_link.title, root_title: parent_link ,btn_level: '.level-2-link-btn' %}
+  {% endfor %}  
+{% endif %} 
+{% endcapture %}
+
 {% if link_level_container_selector == 'root-level' %}
   <div
     data-link-level-container="{{ link_level_container_selector }}-link-container"
@@ -5,13 +30,12 @@
     data-parent-title="{{ block.settings.parent_link }}"
     class="custom-menu-container hidden"
   >
-    <hr>
     <ul
-      class="text-xl text-center flex flex-col p-2 gap-y-2 w-full"
+      class="{{ ul_class }}"
     >
-      <span class="cursor-pointer p-[8px] h-[2.75rem]">
+      <span class="{{ span_class }}">
         <h1
-          class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
+          class="{{ header_class }}"
         >
           {{ block.settings.heading }}
         </h1>
@@ -28,31 +52,42 @@
   >
     <hr>
     <ul
-      class="text-xl text-center flex flex-col p-2 gap-y-2 w-full"
+      class="{{ ul_class }}"
     >
-      <span class="p-[8px] h-[2.75rem] pointer-events-none">
+      <span class="{{ span_class }}">
         <h1
-          class="text-[18px] text-left text-[#373737] font-bold pointer-events-none child-main-header"
+          class="{{ header_class }}"
         >
           {{ block.settings.heading }}
         </h1>
       </span>
-      {% for custom_child_menu in block.settings.custom_menu.links %}
-        <button
-          class="w-full flex flex-row items-center justify-between p-[8px] h-[2.75rem] hover-btn text-black {{ link_level_container_selector }}-link-btn"
-          data-title="{{ block.settings.parent_link }}"
-          data-child-title="{{ custom_child_menu.title }}"
-        >
-          <span class="text-[18px] font-normal pointer-events-none">
-            {{ custom_child_menu.title }}
-          </span>
-          {% if custom_child_menu.links != blank and link_level_container_selector != 'level-2' %}
-            <span class="block w-[1.125rem] h-[1.125rem] pointer-events-none">
-              {% render 'chevron-right' %}
-            </span>
-          {% endif %}
-        </button>
+
+      {% for custom_menu in block.settings.custom_menu.links %}
+        {% assign btn_level = block.settings.menu_level | prepend: '.' | append: '-link-btn' %}
+        {% render 'navigation-link-buttons',
+          has_links: custom_menu.links,
+          link_title_value: custom_menu.title,
+          root_title: block.settings.parent_link,
+          btn_level: btn_level
+        %}
       {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+{% if has_child_links != false %}
+  <div
+    custom-menu-container
+    data-link-level-container="level-2-link-container"
+    data-btn-level=".level-2-link-btn"
+    data-parent-title="{{ parent_link }}"
+    class="custom-menu-container hidden"
+  >
+    <hr>
+    <ul
+      class="{{ ul_class }}"
+    >
+      {{ custom_link_btns }}
     </ul>
   </div>
 {% endif %}
