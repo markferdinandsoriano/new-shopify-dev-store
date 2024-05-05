@@ -1,6 +1,7 @@
 {% capture mobile_screen_accounts_menu %}
-<ul class="account-menu text-[#373737] text-xl text-center bg-[#F3F4F5] flex flex-col gap-y-2 w-full h-auto">
-  <hr class="account-menu">
+<div class="account-menu">
+  <hr>
+  <ul class="text-[#373737] text-xl text-center bg-[#F3F4F5] flex flex-col p-2 gap-y-2 w-full h-auto">
   <button
     class="w-full flex flex-row items-center justify-between p-[8px] h-[44px] hover-btn"
   >
@@ -22,6 +23,7 @@
     <span class="text-[18px] pointer-events-none parent-link-title"> Contact us </span>
   </button>
 </ul>
+</div>
 {% endcapture %}
 
 <navigation-menu-main
@@ -81,17 +83,21 @@
         data-account-menu-container-selector=".account-menu"
         data-custom-image-selector=".custom-images"
         data-link-container-selector="link-container"
+        data-link-headers-selector=".link-headers"
+        data-links-secondary-selector=".link-secondary-title"
         data-root-link-btn-selector=".root-level-link-btn"
         data-level1-link-btn-selector=".level-1-link-btn"
         data-level2-link-btn-selector=".level-2-link-btn"
-        class="link-container overflow-y-auto h-[95vh]"
+        class="link-container flex-col overflow-y-auto h-[95vh]"
       >
         {% render 'navigation-link-container', menu_link_lists: menu_link_lists, screen: 'mobile_screen' %}
         {{ custom_menu_categories }}
         {{ mobile_screen_accounts_menu }}
-        <div class="custom-images hidden py-8 gap-y-6 bg-white">
+        <div class="custom-images hidden ">
           <hr>
-          {{ custom_images }}
+          <ul class="custom-images flex flex-col p-2 gap-y-6 bg-white">
+            {{ custom_images }}
+          </ul>
         </div>
       </navigation-mobile-screen-component>
     </div>

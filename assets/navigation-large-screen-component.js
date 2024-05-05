@@ -1,15 +1,17 @@
 class NavigationLargeScreenComponent extends HTMLElement {
     constructor() {
         super();
-        const { linkLevelContainer, btnLinkLevel, linksTitleSelector, linksSecondarySelector, customMenuAttribute, customImageSelector, linkContainerSelector, rootLevelLinkSelector } = this.dataset
+        const { linkLevelContainer, linkHeadersSelector, btnLinkLevel, linksTitleSelector, linksSecondarySelector, customMenuAttribute, customImageSelector, linkContainerSelector, rootLevelLinkSelector } = this.dataset
         this.linkLevelContainer = linkLevelContainer;
         this.btnLinkLevel = btnLinkLevel;
         this.customImageSelector = customImageSelector;
-        this.linksTitleSelector = linksTitleSelector
-        this.linksSecondarySelector = linksSecondarySelector
+        this.linksTitleSelector = linksTitleSelector;
+        this.linksSecondarySelector = linksSecondarySelector;
+        this.linkHeadersSelector = linkHeadersSelector;
         this.customMenuAttribute = customMenuAttribute;
         this.commonLinkAttribute = linkContainerSelector;
         this.rootLinkLevelSelector = rootLevelLinkSelector;
+
         this.navigationMainMenu = document.querySelector('navigation-menu-main')
     }
 
@@ -21,7 +23,7 @@ class NavigationLargeScreenComponent extends HTMLElement {
         const currentLinkBtns = this.querySelectorAll(this.btnLinkLevel);
 
         if (!(currentLinkBtns instanceof NodeList) && currentLinkBtns.length) return;
-        console.log('currentLinkBtns', currentLinkBtns)
+
         currentLinkBtns.forEach((element) => {
             element.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -115,10 +117,12 @@ class NavigationLargeScreenComponent extends HTMLElement {
 
         const nextMenuHeaderTitle = nextLinkContainer.querySelector(this.linksTitleSelector);
         const nextMenuSecondaryTitle = nextLinkContainer.querySelector(this.linksSecondarySelector);
+        const linkHeaders = nextLinkContainer.querySelector(this.linkHeadersSelector);
 
         if (nextMenuHeaderTitle && nextMenuSecondaryTitle) {
             nextMenuHeaderTitle.textContent = rootTitle;
             nextMenuSecondaryTitle.textContent = `See All ${rootTitle}`
+            linkHeaders.classList.remove('hidden');
         }
     }
 

@@ -1,4 +1,3 @@
-
 class NavigationMobileScreenComponent extends HTMLElement {
     constructor() {
         super();
@@ -13,7 +12,9 @@ class NavigationMobileScreenComponent extends HTMLElement {
             level1LinkBtnSelector,
             level2LinkBtnSelector,
             accountMenuContainerSelector,
-            exitIconSelector
+            exitIconSelector,
+            linksSecondarySelector,
+            linkHeadersSelector
         } = this.dataset
 
         this.mobileBackBtnSelector = mobileBackBtnSelector;
@@ -21,6 +22,8 @@ class NavigationMobileScreenComponent extends HTMLElement {
         this.menuMainTitleSelector = menuMainTitleSelector;
         this.customMenuAttribute = customMenuAttribute;
         this.customImageSelector = customImageSelector;
+        this.linksSecondarySelector = linksSecondarySelector;
+        this.linkHeadersSelector = linkHeadersSelector;
         this.linkContainerSelector = linkContainerSelector;
         this.rootLinkBtnSelector = rootLinkBtnSelector;
         this.navigationMainMenu = document.querySelector('navigation-menu-main')
@@ -35,7 +38,6 @@ class NavigationMobileScreenComponent extends HTMLElement {
         this.triggerBacktBtn();
     }
 
-
     triggerBacktBtn() {
         const backBtn = document.querySelector(this.mobileBackBtnSelector);
         if (!backBtn) return;
@@ -49,28 +51,24 @@ class NavigationMobileScreenComponent extends HTMLElement {
 
     highLightLinkBtns(btnSelector) {
         const currentLinkBtns = this.querySelectorAll(btnSelector);
-        if (!(currentLinkBtns instanceof NodeList) && currentLinkBtns.length) return;
+        if (!currentLinkBtns.length) return;
 
         this.showCustomMenuAndImages(btnSelector);
 
         currentLinkBtns.forEach((btnElement) => {
             btnElement.addEventListener('click', () => {
                 const { title, rootTitle, btnLevel } = btnElement.dataset;
-
                 const hasChildLinks = btnElement.querySelector('.chevron-right-icon > path');
 
                 if (hasChildLinks) {
                     this.navigationMainMenu.changeChevronIconColor(btnElement, '#fff');
                     this.showNextLinkBtns(title, btnLevel, rootTitle)
-                } else {
-
                 }
             })
         })
 
         this.showAccountMenu(btnSelector);
     }
-
 
     showNextLinkBtns(title, btnLevel, rootTitle) {
         if (btnLevel === this.rootLinkBtnSelector) {
@@ -79,6 +77,7 @@ class NavigationMobileScreenComponent extends HTMLElement {
             this.showCustomMenuAndImages(this.level1LinkBtnSelector, title);
             this.highLightLinkBtns(this.level1LinkBtnSelector);
             this.showBackBtnElement(title, this.level1LinkBtnSelector, rootTitle)
+            this.renderLinkHeaders(this.level1LinkBtnSelector, rootTitle)
             return;
         }
 
@@ -88,6 +87,7 @@ class NavigationMobileScreenComponent extends HTMLElement {
             this.showCustomMenuAndImages(this.level2LinkBtnSelector, title);
             this.highLightLinkBtns(this.level2LinkBtnSelector)
             this.showBackBtnElement(title, this.level2LinkBtnSelector, rootTitle)
+            this.renderLinkHeaders(this.level2LinkBtnSelector, rootTitle)
             return;
         }
     }
@@ -100,6 +100,7 @@ class NavigationMobileScreenComponent extends HTMLElement {
             this.showCustomMenuAndImages(this.level1LinkBtnSelector, rootTitle);
             this.showBackBtnElement(rootTitle, this.level1LinkBtnSelector, null, action)
             this.showAccountMenu(this.level1LinkBtnSelector);
+            this.renderLinkHeaders(this.level1LinkBtnSelector, rootTitle)
             return;
         }
 
@@ -109,9 +110,25 @@ class NavigationMobileScreenComponent extends HTMLElement {
             this.showCustomMenuAndImages(this.rootLinkBtnSelector, rootTitle);
             this.showBackBtnElement(rootTitle, this.rootLinkBtnSelector, null, action);
             this.showAccountMenu(this.rootLinkBtnSelector);
+            this.renderLinkHeaders(this.rootLinkBtnSelector, rootTitle)
+            return;
+        }
+    }
+
+    renderLinkHeaders(nextLinkContainerSelector, rootTitle) {
+        const linkHeaderTitle = this.querySelector(this.linksSecondarySelector);
+        const linkHeadersContainer = this.querySelector(this.linkHeadersSelector);
+
+        if (nextLinkContainerSelector === this.rootLinkBtnSelector) {
+            linkHeadersContainer.classList.add('hidden')
             return;
         }
 
+        if (linkHeaderTitle && linkHeadersContainer) {
+            console.log('linkHeaderTitle', linkHeaderTitle, "linkHeadersContainer", linkHeadersContainer)
+            linkHeaderTitle.textContent = `See All ${rootTitle}`
+            linkHeadersContainer.classList.remove('hidden');
+        }
     }
 
     showAccountMenu(currentBtnLevel) {
@@ -123,8 +140,6 @@ class NavigationMobileScreenComponent extends HTMLElement {
             this.navigationMainMenu.manageClasses(accountMenuContainer, 'add', 'hidden');
         }
     }
-
-
 
     mergeNodeListArray(selectors) {
         if (!selectors.length) return;
@@ -156,12 +171,11 @@ class NavigationMobileScreenComponent extends HTMLElement {
         }
     }
 
-
     processCustomMenu(currentBtnLevel, title) {
         if (!currentBtnLevel) return;
         const customMenu = this.querySelectorAll(this.customMenuAttribute);
 
-        if (!(customMenu instanceof NodeList) && !customMenu.length && customMenu) return;
+        if (!customMenu.length && customMenu) return;
 
         customMenu.forEach((element) => {
             this.renderCustomMenu(element, currentBtnLevel, title);
@@ -185,7 +199,6 @@ class NavigationMobileScreenComponent extends HTMLElement {
             this.navigationMainMenu.manageClasses(element, 'add', 'hidden');
             return;
         }
-
     }
 
     showBackBtnElement(title, btnLevel, rootTitle, action) {
@@ -224,7 +237,7 @@ class NavigationMobileScreenComponent extends HTMLElement {
     hideOtherElements(nextLinkBtnSelector, title, elementsToHide, action) {
         const nextLinkBtns = this.querySelectorAll(nextLinkBtnSelector);
 
-        if (!(nextLinkBtns instanceof NodeList) && nextLinkBtns.length) return;
+        if (!nextLinkBtns.length) return;
 
         if (!elementsToHide.length && !nextLinkBtnSelector) return;
 
@@ -242,8 +255,8 @@ class NavigationMobileScreenComponent extends HTMLElement {
             this.navigationMainMenu.removeHighlightsOfNotSelected(element);
         })
     }
-
 }
+
 
 if (!customElements.get('navigation-mobile-screen-component')) {
     customElements.define('navigation-mobile-screen-component', NavigationMobileScreenComponent);

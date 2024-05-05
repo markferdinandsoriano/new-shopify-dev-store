@@ -1,3 +1,19 @@
+{% capture link_headers %}
+<div class="link-headers hidden flex flex-col gap-y-2 w-full">
+  {%  if screen == 'large_screen'  %}
+    <span class="p-[8px] h-[44px]">
+      <h1 class="text-[18px] text-left text-[#373737] font-bold pointer-events-none link-title"></h1>
+    </span>
+  {% endif %}  
+
+  <button class="cursor-pointer p-[8px] h-[44px]">
+    <h1
+      class="text-[18px] text-left text-[#5E6F77] font-normal pointer-events-none link-secondary-title"
+    ></h1>
+  </button>
+</div>
+{% endcapture %}
+
 {% capture large_screen_link_conditions %}
   {% if btn_level == ".root-level-link-btn" %}
    {% for root_link in menu_link_lists %} 
@@ -36,9 +52,9 @@
 {% endfor %}
 {% endcapture %}
 
-<ul main-menu class="text-[#373737] text-xl text-center p-2 flex flex-col gap-y-2 w-full h-auto">
+<ul main-menu class="text-[#373737] text-xl text-center p-2 flex flex-col gap-y-2 w-full h-fit">
+  {{ link_headers }}
   {% if screen == 'large_screen' %}
-    {{ link_headers }}
     {{ large_screen_link_conditions }}
   {% endif %}
 

@@ -151,7 +151,7 @@ class NavigationMenuMain extends HTMLElement {
         if (screenType === 'mobile_screen') {
             const mobileLinkContainer = this.querySelector(`${this.mainContainerSelector} ${this.linkContainerSelector}`)
             if (!mobileLinkContainer) return;
-            this.manageClasses(mobileLinkContainer, ['add'], ['display-grid'])
+            this.manageClasses(mobileLinkContainer, ['add'], ['flex'])
         }
 
         if (screenType === 'large_screen') {
