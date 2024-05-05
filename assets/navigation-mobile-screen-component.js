@@ -77,7 +77,7 @@ class NavigationMobileScreenComponent extends HTMLElement {
             this.showCustomMenuAndImages(this.level1LinkBtnSelector, title);
             this.highLightLinkBtns(this.level1LinkBtnSelector);
             this.showBackBtnElement(title, this.level1LinkBtnSelector, rootTitle)
-            this.renderLinkHeaders(this.level1LinkBtnSelector, rootTitle)
+            this.renderLinkHeaders(this.level1LinkBtnSelector, title)
             return;
         }
 
@@ -87,7 +87,7 @@ class NavigationMobileScreenComponent extends HTMLElement {
             this.showCustomMenuAndImages(this.level2LinkBtnSelector, title);
             this.highLightLinkBtns(this.level2LinkBtnSelector)
             this.showBackBtnElement(title, this.level2LinkBtnSelector, rootTitle)
-            this.renderLinkHeaders(this.level2LinkBtnSelector, rootTitle)
+            this.renderLinkHeaders(this.level2LinkBtnSelector, title)
             return;
         }
     }
@@ -125,7 +125,6 @@ class NavigationMobileScreenComponent extends HTMLElement {
         }
 
         if (linkHeaderTitle && linkHeadersContainer) {
-            console.log('linkHeaderTitle', linkHeaderTitle, "linkHeadersContainer", linkHeadersContainer)
             linkHeaderTitle.textContent = `See All ${rootTitle}`
             linkHeadersContainer.classList.remove('hidden');
         }
